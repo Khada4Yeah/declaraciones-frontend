@@ -1,0 +1,23 @@
+<div class="cards--grid">
+    @for (personaN of personasNaturales; track $index) {
+    <div class="card">
+        <p class="badge-container">
+            <nz-badge nzStandalone [nzCount]="asignarDiaDeclaracion(personaN.identificacion)"
+                [nzStyle]="{ backgroundColor: asignarColor(personaN.identificacion)  }"></nz-badge>
+            <span style="font-weight: 900;">{{personaN.identificacion}}</span>
+        </p>
+        <p style="margin-bottom: 0;">{{personaN.nombres + ' ' + personaN.apellido_p + ' ' + personaN.apellido_m }}</p>
+    </div>
+    }
+
+    @for (personaJ of personasJuridicas; track $index) {
+    <div class="card">
+        <p class="badge-container">
+            <nz-badge nzStandalone [nzCount]="asignarDiaDeclaracion(personaJ.ruc)"
+                [nzStyle]="{ backgroundColor: asignarColor(personaJ.ruc) }"></nz-badge>
+            <span style="font-weight: 900;">{{personaJ.ruc}}</span>
+        </p>
+        <p style="margin-bottom: 0;">{{personaJ.razon_social}}</p>
+    </div>
+    }
+</div>

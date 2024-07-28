@@ -3,8 +3,8 @@ import { environment } from '../../../environments/environment.development';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Auth } from '../models/auth.model';
 import { Observable, tap } from 'rxjs';
-import { TokenService } from './token.service';
-import { Token } from '../models/token.model';
+import { TokenService } from '../../core/services/token.service';
+import { Token } from '../../core/models/token.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class AuthService {
   private tokenService = inject(TokenService);
 
   constructor() {
-    this.apiUrl = environment.apiUrl + '/auth';
+    this.apiUrl = environment.apiUrl + 'auth';
   }
 
   iniciarSesion(auth: Auth): Observable<Token> {

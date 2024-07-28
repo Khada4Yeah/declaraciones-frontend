@@ -9,3 +9,8 @@ export interface PersonaJuridica {
     informacion_adicional: string;
     usuario: Usuario;
 }
+
+export interface CreatePersonaJuridicaDTO extends Omit<PersonaJuridica, 'id_persona_juridica' | 'id_usuario' | 'usuario'> {
+    correo_electronico: string;
+    celular: string;
+}

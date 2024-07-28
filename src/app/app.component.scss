@@ -1,0 +1,16 @@
+/* You can add global styles to this file, and also import other style files */
+body {
+    font-family: 'Google Sans', sans-serif;
+}
+
+nz-spin {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+// Poner en negrita el título de los modales de ng-zorro
+.ant-modal-confirm-body .ant-modal-confirm-title {
+    font-weight: bold;
+}

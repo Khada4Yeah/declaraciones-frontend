@@ -1,0 +1,52 @@
+.cards--grid {
+    background: #ECECEC;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s;
+
+    p {
+        font-size: 1.0em;
+        font-weight: 00;
+        padding: 0;
+    }
+}
+
+.badge-container {
+    display: flex;
+    align-items: center;
+
+    nz-badge {
+        margin-right: 10px;
+    }
+}
+
+
+/* tablets */
+@media screen and (min-width: 40em) and (max-width: 63.9em) {
+    .cards--grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 15px;
+    }
+}
+
+/* web */
+@media screen and (min-width: 64em) {
+    .cards--grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 15px;
+    }
+}

@@ -1,0 +1,59 @@
+<nz-spin [nzSpinning]="!paginaCargada" [nzTip]="'Cargando formulario...'">
+</nz-spin>
+
+<form class="form-login" nz-form nzLayout="vertical" [formGroup]="formularioLogin" (ngSubmit)="iniciarSesion()"
+    *ngIf="paginaCargada">
+    <div class="logo">
+        <img src="assets/images/logo_login.png" alt="">
+    </div>
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Correo Electrónico
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="corroeErrorTpl">
+            <input nz-input formControlName="correo_electronico" placeholder="Correo Electrónico">
+            <ng-template #corroeErrorTpl let-control>
+                @if (control.errors?.['required']){
+                Ingresa el correo electrónico
+                }
+                @if (control.errors?.['email']){
+                Ingresa un correo electrónico válido
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Contraseña
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="contrasenaErrorTpl">
+            <nz-input-group [nzSuffix]="btnContrasena">
+                <input nz-input formControlName="clave" placeholder="Contraseña"
+                    [type]="contrasenaVisible ? 'text' : 'password'">
+            </nz-input-group>
+            <ng-template #btnContrasena>
+                <span nz-icon [nzType]="contrasenaVisible ? 'eye-invisible' : 'eye'"
+                    (click)="contrasenaVisible = !contrasenaVisible"
+                    (keyup.enter)="contrasenaVisible = !contrasenaVisible"
+                    (keydown.space)="contrasenaVisible = !contrasenaVisible" tabindex="0"></span>
+            </ng-template>
+
+            <ng-template #contrasenaErrorTpl let-control>
+                @if (control.errors?.['required']){
+                Ingresa la contraseña
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-control>
+            <button nz-button nzType="primary" nzSize="large" [disabled]="formularioLogin.invalid"
+                [nzLoading]="estado === 'cargando'">
+                Iniciar Sesión
+            </button>
+        </nz-form-control>
+    </nz-form-item>
+
+</form>

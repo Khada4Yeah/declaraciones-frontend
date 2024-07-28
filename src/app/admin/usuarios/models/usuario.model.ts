@@ -3,3 +3,5 @@ export interface Usuario {
     correo_electronico: string;
     celular: string;
 }
+
+export interface CreateUsuarioDTO extends Omit<Usuario, 'id_usuario'> { }

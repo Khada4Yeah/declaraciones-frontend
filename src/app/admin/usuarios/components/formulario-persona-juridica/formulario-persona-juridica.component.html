@@ -1,0 +1,99 @@
+<nz-spin [nzSpinning]="!paginaCargada" [nzTip]="'Cargando formulario...'">
+</nz-spin>
+
+<form nz-form nzLayout="vertical" [formGroup]="formularioPersonaJuridica" (ngSubmit)="guardarPersonaJuridica()"
+    *ngIf="paginaCargada">
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Usuario
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="usuarioErrorTpl">
+            <input nz-input formControlName="correo_electronico" placeholder="Usuario" />
+            <ng-template #usuarioErrorTpl let-control>
+                @if (control.errors?.['required']) {
+                Ingrese el usuario
+                }
+                @if (control.errors?.['email']) {
+                Ingrese un correo electrónico válido
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Clave de acceso
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="claveAccesoErrorTpl">
+            <input nz-input formControlName="clave_acceso" placeholder="Clave de acceso" />
+            <ng-template #claveAccesoErrorTpl let-control>
+                @if (control.errors?.['required']) {
+                Ingrese la clave de acceso
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            RUC
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="rucErrorTpl">
+            <input nz-input formControlName="ruc" placeholder="RUC" />
+            <ng-template #rucErrorTpl let-control>
+                @if (control.errors?.['required']) {
+                Ingrese el RUC
+                }
+                @if(control.errors?.['pattern']) {
+                Ingrese un RUC válido
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Razón social
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="razonSocialErrorTpl">
+            <input nz-input formControlName="razon_social" placeholder="Razón social" />
+            <ng-template #razonSocialErrorTpl let-control>
+                @if (control.errors?.['required']) {
+                Ingrese la razón social
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nzRequired>
+            Celular
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="celularErrorTpl">
+            <input nz-input formControlName="celular" placeholder="Celular" />
+            <ng-template #celularErrorTpl let-control>
+                @if (control.errors?.['required']) {
+                Ingrese el celular
+                }
+                @if (control.errors?.['pattern']) {
+                Ingrese un celular válido
+                }
+            </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label>
+            Información Adicional
+        </nz-form-label>
+        <nz-form-control>
+            <textarea nz-input formControlName="informacion_adicional" placeholder="Información adicional"></textarea>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-control>
+            <button nz-button nzType="primary" [disabled]="formularioPersonaJuridica.invalid">Guardar</button>
+        </nz-form-control>
+    </nz-form-item>
+</form>

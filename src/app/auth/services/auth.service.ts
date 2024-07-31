@@ -5,6 +5,7 @@ import { Auth } from '../models/auth.model';
 import { Observable, tap } from 'rxjs';
 import { TokenService } from '../../core/services/token.service';
 import { Token } from '../../core/models/token.model';
+import { checkToken } from '../../interceptors/token.interceptor';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +30,7 @@ export class AuthService {
   }
 
   cerrarSesion() {
-    return this.http.post(`${this.apiUrl}/logout`, null).pipe(
+    return this.http.post(`${this.apiUrl}/logout`, { context: checkToken() }).pipe(
       tap(() => {
         this.tokenService.removerToken();
       })

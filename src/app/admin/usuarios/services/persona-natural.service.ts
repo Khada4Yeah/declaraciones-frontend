@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
 import { CreatePersonaNaturalDTO, PersonaNatural } from '../models/persona-natural.model';
 import { Observable } from 'rxjs';
+import { checkToken } from '../../../interceptors/token.interceptor';
 
 @Injectable({
   providedIn: 'root'
@@ -16,14 +17,18 @@ export class PersonaNaturalService {
   }
 
   obtenerPersonasNaturales(): Observable<PersonaNatural[]> {
-    return this.http.get<PersonaNatural[]>(`${this.apiUrl}`);
+    return this.http.get<PersonaNatural[]>(`${this.apiUrl}`, { context: checkToken() });
   }
 
   obtenerPersonaNatural(idPersonaNatural: number): Observable<PersonaNatural> {
-    return this.http.get<PersonaNatural>(`${this.apiUrl}/${idPersonaNatural}`);
+    return this.http.get<PersonaNatural>(`${this.apiUrl}/${idPersonaNatural}`, { context: checkToken() });
   }
 
   crearPersonaNatural(personaNatural: CreatePersonaNaturalDTO): Observable<PersonaNatural> {
-    return this.http.post<PersonaNatural>(`${this.apiUrl}`, personaNatural);
+    return this.http.post<PersonaNatural>(`${this.apiUrl}`, personaNatural, { context: checkToken() });
+  }
+
+  actualizarPersonaNatural(idPersonaNatural: number, personaNatural: CreatePersonaNaturalDTO): Observable<PersonaNatural> {
+    return this.http.put<PersonaNatural>(`${this.apiUrl}/${idPersonaNatural}`, personaNatural, { context: checkToken() });
   }
 }

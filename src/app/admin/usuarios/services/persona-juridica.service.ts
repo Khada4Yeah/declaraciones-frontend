@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
 import { Observable } from 'rxjs';
 import { CreatePersonaJuridicaDTO, PersonaJuridica } from '../models/persona-juridica.model';
+import { checkToken } from '../../../interceptors/token.interceptor';
 
 @Injectable({
   providedIn: 'root'
@@ -16,14 +17,20 @@ export class PersonaJuridicaService {
   }
 
   obtenerPersonasJuridicas(): Observable<PersonaJuridica[]> {
-    return this.http.get<PersonaJuridica[]>(`${this.apiUrl}`);
+    return this.http.get<PersonaJuridica[]>(`${this.apiUrl}`, { context: checkToken() });
   }
 
   obtenerPersonaJuridica(idPersonaJuridica: number): Observable<PersonaJuridica> {
-    return this.http.get<PersonaJuridica>(`${this.apiUrl}/${idPersonaJuridica}`);
+    return this.http.get<PersonaJuridica>(`${this.apiUrl}/${idPersonaJuridica}`, { context: checkToken() });
   }
 
   crearPersonaJuridica(personaJuridica: CreatePersonaJuridicaDTO): Observable<PersonaJuridica> {
-    return this.http.post<PersonaJuridica>(`${this.apiUrl}`, personaJuridica);
+    return this.http.post<PersonaJuridica>(`${this.apiUrl}`, personaJuridica, { context: checkToken() });
+  }
+
+  actualizarPersonaJuridica(idPersonaJuridica: number, personaJuridica: CreatePersonaJuridicaDTO): Observable<PersonaJuridica> {
+    console.log('actualizarPersonaJuridica', idPersonaJuridica, personaJuridica, { context: checkToken() });
+
+    return this.http.put<PersonaJuridica>(`${this.apiUrl}/${idPersonaJuridica}`, personaJuridica, { context: checkToken() });
   }
 }

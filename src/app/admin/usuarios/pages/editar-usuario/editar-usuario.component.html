@@ -1,0 +1,8 @@
+<h1>Editar Usuario</h1>
+<hr>
+@if (tipoPersona === 'natural') {
+<app-formulario-persona-natural></app-formulario-persona-natural>
+}
+@if (tipoPersona === 'juridica') {
+<app-formulario-persona-juridica></app-formulario-persona-juridica>
+}

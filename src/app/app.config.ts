@@ -1,7 +1,7 @@
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { provideNzIcons } from './icons-provider';
@@ -11,6 +11,8 @@ import en from '@angular/common/locales/en';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { tokenInterceptor } from './interceptors/token.interceptor';
+import { errorInterceptor } from './interceptors/error.interceptor';
 
 registerLocaleData(en);
 
@@ -23,6 +25,6 @@ export const appConfig: ApplicationConfig = {
     provideNzI18n(en_US),
     importProvidersFrom(FormsModule, NzModalModule),
     provideAnimationsAsync(),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([errorInterceptor, tokenInterceptor])),
   ],
 };

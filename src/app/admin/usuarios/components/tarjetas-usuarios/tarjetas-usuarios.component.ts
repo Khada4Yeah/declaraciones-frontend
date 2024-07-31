@@ -18,6 +18,10 @@ export class TarjetasUsuariosComponent implements OnInit {
   personasNaturales: PersonaNatural[];
   personasJuridicas: PersonaJuridica[];
   diaDeclaracionRuc: { [key: number]: number }[];
+  mostrarModal: boolean;
+  selectedPersonaNatural: PersonaNatural | null;
+  selectedPersonaJuridica: PersonaJuridica | null;
+  paginaCargada: boolean;
 
   constructor() {
     this.personasNaturales = [];
@@ -34,6 +38,10 @@ export class TarjetasUsuariosComponent implements OnInit {
       { 9: 26 },
       { 0: 28 }
     ];
+    this.mostrarModal = false;
+    this.paginaCargada = false;
+    this.selectedPersonaNatural = null;
+    this.selectedPersonaJuridica = null;
   }
 
   ngOnInit(): void {
@@ -48,13 +56,12 @@ export class TarjetasUsuariosComponent implements OnInit {
       next: ({ naturales, juridicas }) => {
         this.personasNaturales = naturales;
         this.personasJuridicas = juridicas;
-        console.log('personasNaturales', this.personasNaturales);
-        console.log('personasJuridicas', this.personasJuridicas);
-
-
       },
       error: (error) => {
         console.log('error', error);
+      },
+      complete: () => {
+        this.paginaCargada = true;
       }
     });
   }
@@ -70,8 +77,6 @@ export class TarjetasUsuariosComponent implements OnInit {
     // Obtener el dia actual
     const fechaActual = new Date();
     const diaActual = fechaActual.getDate();
-    console.log('diaActual' + diaActual);
-    console.log('diaDeclaracion' + diaDeclaracion);
     // Si el dia de declaración es igual al dia actual, el color es rojo
     if (diaDeclaracion === diaActual) {
       return 'red';
@@ -83,5 +88,20 @@ export class TarjetasUsuariosComponent implements OnInit {
     return 'green';
   }
 
+  mostrarDetalle(personaN: PersonaNatural | null, personaJ: PersonaJuridica | null) {
+    this.selectedPersonaNatural = personaN;
+    this.selectedPersonaJuridica = personaJ;
+    this.mostrarModal = true;
+  }
+
+  cerrarModal() {
+    this.mostrarModal = false;
+    this.selectedPersonaNatural = null;
+    this.selectedPersonaJuridica = null;
+  }
+
+  trackById(index: number, item: PersonaNatural | PersonaJuridica): string {
+    return 'identificacion' in item ? item.identificacion : item.ruc;
+  }
 
 }

@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
 import { CreatePersonaNaturalDTO, PersonaNatural } from '../models/persona-natural.model';
 import { Observable } from 'rxjs';
-import { checkToken } from '../../../interceptors/token.interceptor';
+import { checkToken } from '../../../core/interceptors/token.interceptor';
 
 @Injectable({
   providedIn: 'root'
@@ -30,5 +30,9 @@ export class PersonaNaturalService {
 
   actualizarPersonaNatural(idPersonaNatural: number, personaNatural: CreatePersonaNaturalDTO): Observable<PersonaNatural> {
     return this.http.put<PersonaNatural>(`${this.apiUrl}/${idPersonaNatural}`, personaNatural, { context: checkToken() });
+  }
+
+  eliminarPersonaNatural(idPersonaNatural: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${idPersonaNatural}`, { context: checkToken() });
   }
 }

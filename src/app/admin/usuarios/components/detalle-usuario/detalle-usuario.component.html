@@ -12,6 +12,8 @@
                 {{ personaNatural.nombres + ' ' + personaNatural.apellido_p + ' ' + personaNatural.apellido_m}}
             </p>
             <p><b>Celular: </b>{{ personaNatural.usuario.celular }}</p>
+            <p><b>Información Adicional:</b></p>
+            <textarea nz-input readOnly>{{ personaNatural.informacion_adicional }}</textarea>
         </ng-container>
         <ng-template #juridicaTemplate>
             <ng-container *ngIf="personaJuridica; else noDataTemplate">
@@ -20,6 +22,8 @@
                 <p><b>RUC: </b>{{ personaJuridica.ruc }}</p>
                 <p><b>Razón Social: </b>{{ personaJuridica.razon_social }}</p>
                 <p><b>Celular: </b>{{ personaJuridica.usuario.celular }}</p>
+                <p><b>Información Adicional:</b></p>
+                <textarea nz-input readOnly>{{ personaJuridica.informacion_adicional }}</textarea>
             </ng-container>
         </ng-template>
         <ng-template #noDataTemplate>
@@ -28,7 +32,8 @@
     </ng-template>
     <ng-template #botonesModal>
         <button nz-button nzType="primary" (click)="editarUsuario()">Editar</button>
-        <button nz-button nzType="primary" nzDanger>Eliminar</button>
+        <button nz-button nzType="primary" nzDanger nzOkDanger nz-popconfirm nzPopconfirmTitle="¿Está seguro?"
+            nzCancelText="Cancelar" (nzOnConfirm)="eliminarUsuario()">Eliminar</button>
         <button nz-button (click)="cerrarModalUsuario()">Cerrar</button>
     </ng-template>
 </nz-modal>

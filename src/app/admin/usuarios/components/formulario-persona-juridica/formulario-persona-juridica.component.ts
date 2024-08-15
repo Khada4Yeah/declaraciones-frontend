@@ -91,7 +91,7 @@ export class FormularioPersonaJuridicaComponent implements OnInit {
           },
           error: (error) => {
             this.estado = "fallido";
-            console.log(error);
+            this.modalService.mostrar('error', this.modalService.formateoErrores(error.error));
           }
         });
       }
@@ -103,7 +103,7 @@ export class FormularioPersonaJuridicaComponent implements OnInit {
           },
           error: (error) => {
             this.estado = "fallido";
-            console.log(error);
+            this.modalService.mostrar('error', this.modalService.formateoErrores(error.error));
           }
         });
       }

@@ -11,9 +11,8 @@ import en from '@angular/common/locales/en';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { NzModalModule } from 'ng-zorro-antd/modal';
-import { tokenInterceptor } from './interceptors/token.interceptor';
-import { errorInterceptor } from './interceptors/error.interceptor';
-
+import { errorInterceptor } from './core/interceptors/error.interceptor';
+import { tokenInterceptor } from './core/interceptors/token.interceptor';
 registerLocaleData(en);
 
 export const appConfig: ApplicationConfig = {

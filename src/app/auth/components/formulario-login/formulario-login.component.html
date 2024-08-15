@@ -4,11 +4,11 @@
 <form class="form-login" nz-form nzLayout="vertical" [formGroup]="formularioLogin" (ngSubmit)="iniciarSesion()"
     *ngIf="paginaCargada">
     <div class="logo">
-        <img src="assets/images/logo_login.png" alt="">
+        <img src="assets/images/logo.png" alt="">
     </div>
     <nz-form-item>
-        <nz-form-label nzRequired>
-            Correo Electrónico
+        <nz-form-label>
+            <b>Correo Electrónico</b>
         </nz-form-label>
         <nz-form-control [nzErrorTip]="corroeErrorTpl">
             <input nz-input formControlName="correo_electronico" placeholder="Correo Electrónico">
@@ -24,8 +24,8 @@
     </nz-form-item>
 
     <nz-form-item>
-        <nz-form-label nzRequired>
-            Contraseña
+        <nz-form-label>
+            <b>Contraseña</b>
         </nz-form-label>
         <nz-form-control [nzErrorTip]="contrasenaErrorTpl">
             <nz-input-group [nzSuffix]="btnContrasena">

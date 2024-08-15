@@ -3,7 +3,8 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
 import { Observable } from 'rxjs';
 import { CreatePersonaJuridicaDTO, PersonaJuridica } from '../models/persona-juridica.model';
-import { checkToken } from '../../../interceptors/token.interceptor';
+import { checkToken } from '../../../core/interceptors/token.interceptor';
+
 
 @Injectable({
   providedIn: 'root'
@@ -32,5 +33,9 @@ export class PersonaJuridicaService {
     console.log('actualizarPersonaJuridica', idPersonaJuridica, personaJuridica, { context: checkToken() });
 
     return this.http.put<PersonaJuridica>(`${this.apiUrl}/${idPersonaJuridica}`, personaJuridica, { context: checkToken() });
+  }
+
+  eliminarPersonaJuridica(idPersonaJuridica: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${idPersonaJuridica}`, { context: checkToken() });
   }
 }

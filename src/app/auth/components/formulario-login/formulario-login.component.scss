@@ -18,15 +18,18 @@
     }
 
     .logo {
-        text-align: center;
         height: 200px;
-        line-height: 40px;
         display: flex;
         justify-content: center;
         align-items: center;
+        background-color: black;
+        border-top-right-radius: 25px;
+        border-bottom-left-radius: 25px;
+        margin-bottom: 10px;
 
         img {
-            width: 150px;
+            width: 250px;
+
         }
     }
 }

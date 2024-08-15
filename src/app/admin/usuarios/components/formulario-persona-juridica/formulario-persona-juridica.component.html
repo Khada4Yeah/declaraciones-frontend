@@ -93,7 +93,8 @@
 
     <nz-form-item>
         <nz-form-control>
-            <button nz-button nzType="primary" [disabled]="formularioPersonaJuridica.invalid">Guardar</button>
+            <button nz-button nzType="primary" [nzLoading]="estado==='cargando'"
+                [disabled]="formularioPersonaJuridica.invalid">Guardar</button>
         </nz-form-control>
     </nz-form-item>
 </form>

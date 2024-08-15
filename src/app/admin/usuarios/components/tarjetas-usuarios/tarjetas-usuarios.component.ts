@@ -1,5 +1,4 @@
 import { Component, inject, OnInit } from '@angular/core';
-
 import { PersonaNaturalService } from '../../services/persona-natural.service';
 import { PersonaJuridicaService } from '../../services/persona-juridica.service';
 import { PersonaNatural } from '../../models/persona-natural.model';
@@ -22,6 +21,7 @@ export class TarjetasUsuariosComponent implements OnInit {
   selectedPersonaNatural: PersonaNatural | null;
   selectedPersonaJuridica: PersonaJuridica | null;
   paginaCargada: boolean;
+  colorCache: { [key: string]: string } = {};
 
   constructor() {
     this.personasNaturales = [];
@@ -67,25 +67,32 @@ export class TarjetasUsuariosComponent implements OnInit {
   }
 
   asignarDiaDeclaracion(identificacion: string): number {
-    const novenoDigito = parseInt(identificacion.charAt(9), 10);
+    const novenoDigito = parseInt(identificacion.charAt(8), 10);
+    //console.log('novenoDigito', novenoDigito);
     const diaDeclaracion = this.diaDeclaracionRuc.find((dia) => dia[novenoDigito]);
     return diaDeclaracion ? diaDeclaracion[novenoDigito] : -1;
   }
 
   asignarColor(identificacion: string) {
+    if (this.colorCache[identificacion]) {
+      return this.colorCache[identificacion];
+    }
+
     const diaDeclaracion = this.asignarDiaDeclaracion(identificacion);
-    // Obtener el dia actual
     const fechaActual = new Date();
     const diaActual = fechaActual.getDate();
-    // Si el dia de declaración es igual al dia actual, el color es rojo
+
+    let color;
     if (diaDeclaracion === diaActual) {
-      return 'red';
+      color = 'red';
+    } else if (diaDeclaracion === diaActual + 1 || diaDeclaracion === diaActual + 2) {
+      color = '#FFC300';
+    } else {
+      color = 'green';
     }
-    // Si el dia de declaracion esta proximo por uno o dos dias, el color es amarillo
-    if (diaDeclaracion === diaActual + 1 || diaDeclaracion === diaActual + 2) {
-      return 'yellow';
-    }
-    return 'green';
+
+    this.colorCache[identificacion] = color;
+    return color;
   }
 
   mostrarDetalle(personaN: PersonaNatural | null, personaJ: PersonaJuridica | null) {

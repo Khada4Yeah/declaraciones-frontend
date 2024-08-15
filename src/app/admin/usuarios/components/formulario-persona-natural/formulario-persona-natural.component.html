@@ -4,116 +4,80 @@
 <form nz-form nzLayout="vertical" [formGroup]="formularioPersonaNatural" (ngSubmit)="guardarPersonaNatural()"
     *ngIf="paginaCargada">
     <nz-form-item>
-        <nz-form-label nzRequired>
-            Usuario
-        </nz-form-label>
+        <nz-form-label nzRequired> Usuario </nz-form-label>
         <nz-form-control [nzErrorTip]="usuarioErrorTpl">
             <input nz-input formControlName="correo_electronico" placeholder="Usuario" />
             <ng-template #usuarioErrorTpl let-control>
-                @if (control.errors?.['required']) {
-                Ingrese el usuario
-                }
-                @if (control.errors?.['email']) {
-                Ingrese un correo electrónico válido
-                }
+                @if (control.errors?.['required']) { Ingrese el usuario } @if
+                (control.errors?.['email']) { Ingrese un correo electrónico válido }
             </ng-template>
         </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-        <nz-form-label nzRequired>
-            Clave de acceso
-        </nz-form-label>
+        <nz-form-label nzRequired> Clave de acceso </nz-form-label>
         <nz-form-control [nzErrorTip]="claveAccesoErrorTpl">
             <input nz-input formControlName="clave_acceso" placeholder="Clave de acceso" />
             <ng-template #claveAccesoErrorTpl let-control>
-                @if (control.errors?.['required']) {
-                Ingrese la clave de acceso
-                }
+                @if (control.errors?.['required']) { Ingrese la clave de acceso }
             </ng-template>
         </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-        <nz-form-label nzRequired>
-            Cédula o RUC
-        </nz-form-label>
+        <nz-form-label nzRequired> Cédula o RUC </nz-form-label>
         <nz-form-control [nzErrorTip]="cedulaRucErrorTpl">
             <input nz-input formControlName="identificacion" placeholder="Cédula o RUC" />
             <ng-template #cedulaRucErrorTpl let-control>
-                @if (control.errors?.['required']) {
-                Ingrese la cédula o RUC
-                }
-                @if (control.errors?.['pattern']) {
-                Ingrese una cédula o RUC válida
-                }
+                @if (control.errors?.['required']) { Ingrese la cédula o RUC } @if
+                (control.errors?.['pattern']) { Ingrese una cédula o RUC válida }
             </ng-template>
         </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-        <nz-form-label nzRequired>
-            Nombres
-        </nz-form-label>
+        <nz-form-label nzRequired> Nombres </nz-form-label>
         <nz-form-control [nzErrorTip]="nombresErrorTpl">
             <input nz-input formControlName="nombres" placeholder="Nombres" />
             <ng-template #nombresErrorTpl let-control>
-                @if (control.errors?.['required']) {
-                Ingrese los nombres
-                }
+                @if (control.errors?.['required']) { Ingrese los nombres }
             </ng-template>
         </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-        <nz-form-label>
-            Apellido Paterno
-        </nz-form-label>
+        <nz-form-label> Apellido Paterno </nz-form-label>
         <nz-form-control [nzErrorTip]="apellidoPaternoErrorTpl">
             <input nz-input formControlName="apellido_p" placeholder="Apellido Paterno" />
             <ng-template #apellidoPaternoErrorTpl let-control>
-                @if (control.errors?.['required']) {
-                Ingrese el apellido paterno
-                }
+                @if (control.errors?.['required']) { Ingrese el apellido paterno }
             </ng-template>
         </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-        <nz-form-label>
-            Apellido Materno
-        </nz-form-label>
+        <nz-form-label> Apellido Materno </nz-form-label>
         <nz-form-control [nzErrorTip]="apellidoMaternoErrorTpl">
             <input nz-input formControlName="apellido_m" placeholder="Apellido Materno" />
             <ng-template #apellidoMaternoErrorTpl let-control>
-                @if (control.errors?.['required']) {
-                Ingrese el apellido materno
-                }
+                @if (control.errors?.['required']) { Ingrese el apellido materno }
             </ng-template>
         </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-        <nz-form-label nzRequired>
-            Celular
-        </nz-form-label>
+        <nz-form-label nzRequired> Celular </nz-form-label>
         <nz-form-control [nzErrorTip]="telefonoErrorTpl">
             <input nz-input formControlName="celular" placeholder="Celular" />
             <ng-template #telefonoErrorTpl let-control>
-                @if (control.errors?.['required']) {
-                Ingrese el celular
-                }
-                @if (control.errors?.['pattern']) {
-                Ingrese un celular válido
-                }
+                @if (control.errors?.['required']) { Ingrese el celular } @if
+                (control.errors?.['pattern']) { Ingrese un celular válido }
             </ng-template>
         </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-        <nz-form-label>
-            Informacion Adicional
-        </nz-form-label>
+        <nz-form-label> Informacion Adicional </nz-form-label>
         <nz-form-control>
             <textarea nz-input formControlName="informacion_adicional"></textarea>
         </nz-form-control>
@@ -121,10 +85,10 @@
 
     <nz-form-item>
         <nz-form-control>
-            <button nz-button nzType="primary" nzSize="large" [disabled]="formularioPersonaNatural.invalid">
+            <button nz-button nzType="primary" [nzLoading]="estado === 'cargando'"
+                [disabled]="formularioPersonaNatural.invalid">
                 Guardar
             </button>
         </nz-form-control>
     </nz-form-item>
-
 </form>

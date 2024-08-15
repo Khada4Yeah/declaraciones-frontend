@@ -13,7 +13,7 @@ export class ModalService {
 
   constructor(private modalService: NzModalService) { }
 
-  mostrar(tipo: 'error' | 'success' | 'info' | 'warning', mensaje: string, ruta?: string) {
+  mostrar(tipo: 'error' | 'success' | 'info' | 'warning', mensaje: string, ruta?: string, recargar?: boolean) {
     let modal: NzModalRef;
     switch (tipo) {
       case 'error':
@@ -25,13 +25,18 @@ export class ModalService {
         break;
       case 'success':
         modal = this.modalService.success({
-          nzTitle: 'Success',
+          nzTitle: 'Éxito',
           nzContent: mensaje.replace(/\n/g, '<br>'),
           nzStyle: { whiteSpace: 'pre-line' }
         });
         if (ruta) {
           modal.afterClose.subscribe(() => {
             this.router.navigate([ruta]);
+          });
+        }
+        if (recargar) {
+          modal.afterClose.subscribe(() => {
+            window.location.reload();
           });
         }
         break;
@@ -56,7 +61,9 @@ export class ModalService {
 
   public formateoErrores(error: respuestaError): string {
     let result = error.message + '\n';
-    if (error.errors !== null) {
+    console.log('error desde funcion', error);
+
+    if (error.errors !== null && error.errors !== undefined) {
       Object.keys(error.errors).forEach((key: string) => {
         error.errors![key].forEach((msg: string) => {
           result += `${msg}\n`;

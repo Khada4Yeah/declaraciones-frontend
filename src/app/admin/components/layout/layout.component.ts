@@ -25,7 +25,7 @@ export class LayoutComponent {
           console.error(error);
         },
         complete: () => {
-          this.router.navigate(['/login']);
+          this.router.navigate(['auth']);
         }
       }
     );

@@ -20,6 +20,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { EditarUsuarioComponent } from './pages/editar-usuario/editar-usuario.component';
 import { CrearUsuarioComponent } from './pages/crear-usuario/crear-usuario.component';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,9 @@ import { CrearUsuarioComponent } from './pages/crear-usuario/crear-usuario.compo
     NzSelectModule,
     ReactiveFormsModule,
     FormsModule,
-    NzInputModule
+    NzInputModule,
+    NzPopconfirmModule
+
   ],
 })
 export class UsuariosModule { }

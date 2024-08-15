@@ -95,7 +95,8 @@ export class FormularioPersonaNaturalComponent implements OnInit {
             this.modalService.mostrar('success', 'Usuario actualizado exitosamente', '/admin/usuarios/lista-usuarios');
           },
           error: (error) => {
-            console.log(error);
+            this.estado = "fallido";
+            this.modalService.mostrar('error', this.modalService.formateoErrores(error.error));
 
           },
           complete: () => {
@@ -110,7 +111,8 @@ export class FormularioPersonaNaturalComponent implements OnInit {
           },
           error: (error) => {
             this.estado = 'fallido';
-            console.log(error);
+            console.log(error.error);
+            this.modalService.mostrar('error', this.modalService.formateoErrores(error));
           },
           complete: () => {
             this.estado = 'exitoso';

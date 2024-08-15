@@ -9,12 +9,12 @@ import { ModalService } from '../../../core/services/modal.service';
 @Component({
   selector: 'app-formulario-login',
   templateUrl: './formulario-login.component.html',
-  styleUrl: './formulario-login.component.scss'
+  styleUrl: './formulario-login.component.scss',
 })
 export class FormularioLoginComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
-  private modal = inject(ModalService);
+  private modalService = inject(ModalService);
   private authService = inject(AuthService);
 
   formularioLogin!: FormGroup;
@@ -40,20 +40,19 @@ export class FormularioLoginComponent implements OnInit {
   iniciarSesion() {
     this.estado = 'cargando';
     if (this.formularioLogin.valid) {
-      this.authService.iniciarSesion(this.formularioLogin.value).subscribe(
-        {
-          next: () => {
-            this.estado = 'exitoso';
-            this.router.navigate(['/admin']);
-          },
-          error: (error) => {
-            this.estado = 'fallido';
-            console.log(error);
-
-            //this.modal.mostrar('error', this.modal.formateoErrores(error));
-          }
-        });
+      this.authService.iniciarSesion(this.formularioLogin.value).subscribe({
+        next: () => {
+          this.estado = 'exitoso';
+          this.router.navigate(['/admin']);
+        },
+        error: (error) => {
+          this.estado = 'fallido';
+          this.modalService.mostrar(
+            'error',
+            this.modalService.formateoErrores(error.error)
+          );
+        },
+      });
     }
   }
-
 }

@@ -70,8 +70,8 @@ export class FormularioPersonaNaturalComponent implements OnInit {
             this.formularioPersonaNatural.get('correo_electronico')?.setValue(personaNatural.usuario.correo_electronico);
             this.formularioPersonaNatural.get('celular')?.setValue(personaNatural.usuario.celular);
           },
-          error: (error) => {
-            console.log(error);
+          error: () => {
+            this.modalService.mostrar('error', 'No se pudieron cargar los datos');
 
           },
           complete: () => {
@@ -84,7 +84,6 @@ export class FormularioPersonaNaturalComponent implements OnInit {
 
   guardarPersonaNatural(): void {
     this.estado = 'cargando';
-    console.log(this.formularioPersonaNatural.value);
 
     if (this.formularioPersonaNatural.valid) {
       if (this.idPersonaNatural) {
@@ -97,6 +96,8 @@ export class FormularioPersonaNaturalComponent implements OnInit {
           error: (error) => {
             this.estado = "fallido";
             this.modalService.mostrar('error', this.modalService.formateoErrores(error.error));
+            console.log(error);
+
 
           },
           complete: () => {
@@ -111,8 +112,7 @@ export class FormularioPersonaNaturalComponent implements OnInit {
           },
           error: (error) => {
             this.estado = 'fallido';
-            console.log(error.error);
-            this.modalService.mostrar('error', this.modalService.formateoErrores(error));
+            this.modalService.mostrar('error', this.modalService.formateoErrores(error.error));
           },
           complete: () => {
             this.estado = 'exitoso';

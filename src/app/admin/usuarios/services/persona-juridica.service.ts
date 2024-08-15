@@ -30,8 +30,6 @@ export class PersonaJuridicaService {
   }
 
   actualizarPersonaJuridica(idPersonaJuridica: number, personaJuridica: CreatePersonaJuridicaDTO): Observable<PersonaJuridica> {
-    console.log('actualizarPersonaJuridica', idPersonaJuridica, personaJuridica, { context: checkToken() });
-
     return this.http.put<PersonaJuridica>(`${this.apiUrl}/${idPersonaJuridica}`, personaJuridica, { context: checkToken() });
   }
 

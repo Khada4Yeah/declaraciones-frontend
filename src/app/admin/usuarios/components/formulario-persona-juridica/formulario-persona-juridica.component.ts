@@ -68,8 +68,8 @@ export class FormularioPersonaJuridicaComponent implements OnInit {
           this.formularioPersonaJuridica.get('correo_electronico')?.setValue(personaJuridica.usuario.correo_electronico);
           this.formularioPersonaJuridica.get('celular')?.setValue(personaJuridica.usuario.celular);
         },
-        error: (error) => {
-          console.log(error);
+        error: () => {
+          this.modalService.mostrar('error', 'No se pudieron cargar los datos');
         },
         complete: () => {
           this.paginaCargada = true;
@@ -86,8 +86,6 @@ export class FormularioPersonaJuridicaComponent implements OnInit {
           next: () => {
             this.estado = "exitoso";
             this.modalService.mostrar('success', 'Usuario actualizado exitosamente', '/admin/usuarios/lista-usuarios');
-            console.log('Usuario actualizado exitosamente');
-
           },
           error: (error) => {
             this.estado = "fallido";

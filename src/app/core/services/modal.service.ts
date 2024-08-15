@@ -61,7 +61,6 @@ export class ModalService {
 
   public formateoErrores(error: respuestaError): string {
     let result = error.message + '\n';
-    console.log('error desde funcion', error);
 
     if (error.errors !== null && error.errors !== undefined) {
       Object.keys(error.errors).forEach((key: string) => {

@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
@@ -10,12 +10,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
   template: `<router-outlet></router-outlet>`,
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
 
-
-  constructor(private router: Router) { }
-
-  ngOnInit(): void {
-    console.log(this.router.config);
-  }
 }
+
+

@@ -4,6 +4,7 @@ import { PersonaJuridicaService } from '../../services/persona-juridica.service'
 import { PersonaNatural } from '../../models/persona-natural.model';
 import { PersonaJuridica } from '../../models/persona-juridica.model';
 import { forkJoin } from 'rxjs';
+import { ModalService } from '../../../../core/services/modal.service';
 
 @Component({
   selector: 'app-tarjetas-usuarios',
@@ -13,36 +14,19 @@ import { forkJoin } from 'rxjs';
 export class TarjetasUsuariosComponent implements OnInit {
   private personaNaturalService = inject(PersonaNaturalService);
   private personaJuridicaService = inject(PersonaJuridicaService);
+  private modalService = inject(ModalService);
 
-  personasNaturales: PersonaNatural[];
-  personasJuridicas: PersonaJuridica[];
-  diaDeclaracionRuc: { [key: number]: number }[];
-  mostrarModal: boolean;
-  selectedPersonaNatural: PersonaNatural | null;
-  selectedPersonaJuridica: PersonaJuridica | null;
-  paginaCargada: boolean;
-  colorCache: { [key: string]: string } = {};
-
-  constructor() {
-    this.personasNaturales = [];
-    this.personasJuridicas = [];
-    this.diaDeclaracionRuc = [
-      { 1: 10 },
-      { 2: 12 },
-      { 3: 14 },
-      { 4: 16 },
-      { 5: 18 },
-      { 6: 20 },
-      { 7: 22 },
-      { 8: 24 },
-      { 9: 26 },
-      { 0: 28 }
-    ];
-    this.mostrarModal = false;
-    this.paginaCargada = false;
-    this.selectedPersonaNatural = null;
-    this.selectedPersonaJuridica = null;
-  }
+  personasNaturales: PersonaNatural[] = [];
+  personasJuridicas: PersonaJuridica[] = [];
+  diaDeclaracionRuc: Record<number, number> = {
+    1: 10, 2: 12, 3: 14, 4: 16, 5: 18,
+    6: 20, 7: 22, 8: 24, 9: 26, 0: 28
+  };
+  mostrarModal = false;
+  selectedPersonaNatural: PersonaNatural | null = null;
+  selectedPersonaJuridica: PersonaJuridica | null = null;
+  paginaCargada = false;
+  colorCache: Record<string, string> = {};
 
   ngOnInit(): void {
     this.obtenerPersonas();
@@ -57,39 +41,27 @@ export class TarjetasUsuariosComponent implements OnInit {
         this.personasNaturales = naturales;
         this.personasJuridicas = juridicas;
       },
-      error: (error) => {
-        console.log('error', error);
-      },
-      complete: () => {
-        this.paginaCargada = true;
-      }
+      error: () => this.modalService.mostrar('error', 'No se pudieron cargar los datos'),
+      complete: () => this.paginaCargada = true
     });
   }
 
   asignarDiaDeclaracion(identificacion: string): number {
     const novenoDigito = parseInt(identificacion.charAt(8), 10);
-    //console.log('novenoDigito', novenoDigito);
-    const diaDeclaracion = this.diaDeclaracionRuc.find((dia) => dia[novenoDigito]);
-    return diaDeclaracion ? diaDeclaracion[novenoDigito] : -1;
+    return this.diaDeclaracionRuc[novenoDigito] ?? -1;
   }
 
-  asignarColor(identificacion: string) {
+  asignarColor(identificacion: string): string {
     if (this.colorCache[identificacion]) {
       return this.colorCache[identificacion];
     }
 
     const diaDeclaracion = this.asignarDiaDeclaracion(identificacion);
-    const fechaActual = new Date();
-    const diaActual = fechaActual.getDate();
+    const diaActual = new Date().getDate();
 
-    let color;
-    if (diaDeclaracion === diaActual) {
-      color = 'red';
-    } else if (diaDeclaracion === diaActual + 1 || diaDeclaracion === diaActual + 2) {
-      color = '#FFC300';
-    } else {
-      color = 'green';
-    }
+    const color = diaDeclaracion === diaActual ? 'red'
+      : diaDeclaracion === diaActual + 1 || diaDeclaracion === diaActual + 2 ? '#FFC300'
+        : 'green';
 
     this.colorCache[identificacion] = color;
     return color;
@@ -110,5 +82,4 @@ export class TarjetasUsuariosComponent implements OnInit {
   trackById(index: number, item: PersonaNatural | PersonaJuridica): string {
     return 'identificacion' in item ? item.identificacion : item.ruc;
   }
-
 }

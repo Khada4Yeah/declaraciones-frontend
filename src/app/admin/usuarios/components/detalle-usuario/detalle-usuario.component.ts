@@ -74,10 +74,8 @@ export class DetalleUsuarioComponent implements OnInit {
         this.personaNaturalService
           .eliminarPersonaNatural(this.personaNatural.id_persona_natural)
           .subscribe({
-            next: (res) => {
-              console.log(res);
+            next: () => {
               this.cerrarModalUsuario();
-              console.log('aqui');
 
               this.modalService.mostrar(
                 'success',
@@ -91,14 +89,10 @@ export class DetalleUsuarioComponent implements OnInit {
       }
 
       if (this.personaJuridica) {
-        console.log('entra aqui');
-        console.log(this.personaJuridica);
-
         this.personaJuridicaService
           .eliminarPersonaJuridica(this.personaJuridica.id_persona_juridica)
           .subscribe({
-            next: (res) => {
-              console.log(res);
+            next: () => {
               this.cerrarModalUsuario();
               this.modalService.mostrar(
                 'success',

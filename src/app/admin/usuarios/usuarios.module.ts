@@ -21,6 +21,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { EditarUsuarioComponent } from './pages/editar-usuario/editar-usuario.component';
 import { CrearUsuarioComponent } from './pages/crear-usuario/crear-usuario.component';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
 
 @NgModule({
   declarations: [
@@ -45,8 +46,8 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
     ReactiveFormsModule,
     FormsModule,
     NzInputModule,
-    NzPopconfirmModule
-
+    NzPopconfirmModule,
+    NzEmptyModule
   ],
 })
 export class UsuariosModule { }

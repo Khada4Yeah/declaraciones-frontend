@@ -1,7 +1,7 @@
 <nz-spin [nzSpinning]="!paginaCargada" [nzTip]="'Cargando lista de usuarios...'">
 </nz-spin>
 
-<div class="cards--grid" *ngIf="paginaCargada">
+<div class="cards--grid" *ngIf="paginaCargada && (personasNaturales.length > 0 || personasJuridicas.length > 0) ">
     <div *ngFor="let personaN of personasNaturales; trackBy: trackById" class="card">
         <p class="badge-container">
             <nz-badge nzStandalone [nzCount]="asignarDiaDeclaracion(personaN.identificacion)"
@@ -27,6 +27,11 @@
         </p>
         <p style="margin-bottom: 0;">{{personaJ.razon_social}}</p>
     </div>
+</div>
+
+<div class="contenedor">
+    <nz-empty *ngIf="paginaCargada && (personasNaturales.length === 0 && personasJuridicas.length === 0)"
+        nzNotFoundContent="No existen registros"></nz-empty>
 </div>
 
 <app-detalle-usuario [modalVisible]="mostrarModal" [personaNatural]="selectedPersonaNatural"

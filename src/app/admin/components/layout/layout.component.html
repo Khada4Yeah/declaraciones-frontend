@@ -1,4 +1,4 @@
-<nz-layout class="app-layout">
+<nz-layout class="app-layout" *ngIf="estado === 'inicial'">
     <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed"
         [nzTrigger]="null">
         <div class="sidebar-logo">
@@ -47,8 +47,14 @@
         </nz-content>
         <nz-footer class="app-footer">
             <div class="footer-content">
-                &copy; 2024. Todos los derechos reservados.
+                M&V Asociados&copy; 2024. Todos los derechos reservados.
             </div>
         </nz-footer>
     </nz-layout>
 </nz-layout>
+
+<div class="contenedor" *ngIf="estado !== 'inicial'">
+    <div>
+        <nz-spin nzSize="large" nzTip="Cerrando Sesión..."></nz-spin>
+    </div>
+</div>

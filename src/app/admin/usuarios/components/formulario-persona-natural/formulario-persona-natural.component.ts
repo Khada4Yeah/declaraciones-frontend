@@ -1,12 +1,16 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { EncriptacionService } from '../../../../core/services/encriptacion.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ModalService } from '../../../../core/services/modal.service';
 import { PersonaNaturalService } from '../../services/persona-natural.service';
 import { EstadoSolicitud } from '../../../../core/models/request-status.model';
 import { PersonaNatural } from '../../models/persona-natural.model';
 
+/**
+ * Componente de formulario para crear y editar personas naturales.
+ * Detecta automáticamente el modo (creación o edición) según los parámetros de la URL.
+ */
 @Component({
   selector: 'app-formulario-persona-natural',
   templateUrl: './formulario-persona-natural.component.html',
@@ -14,74 +18,84 @@ import { PersonaNatural } from '../../models/persona-natural.model';
 })
 export class FormularioPersonaNaturalComponent implements OnInit {
   private personaNaturalService = inject(PersonaNaturalService);
-  private encriptacionService = inject(EncriptacionService);
   private formBuilder = inject(FormBuilder);
   private modalService = inject(ModalService);
   private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
 
-  paginaCargada: boolean;
+  paginaCargada = false;
   formularioPersonaNatural!: FormGroup;
-  estado: EstadoSolicitud;
+  estado: EstadoSolicitud = 'inicial';
   personaNatural!: PersonaNatural;
-  idPersonaNatural: number | null;
+  idPersonaNatural: number | null = null;
 
   constructor() {
-    this.paginaCargada = false;
-    this.estado = 'inicial';
-    this.idPersonaNatural = null;
     this.construirFormulario();
   }
 
+  /**
+   * Obtiene el ID de los parámetros de la URL y carga los datos si es modo edición.
+   * Utiliza takeUntilDestroyed para evitar memory leaks.
+   */
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const idEncriptado = params.get('id');
-      if (idEncriptado) {
-        this.idPersonaNatural = Number(this.encriptacionService.desencriptar(idEncriptado));
-      }
-      if (this.idPersonaNatural !== null) {
-        this.cargarPersonaNatural();
-      }
-      else {
-        this.paginaCargada = true;
-      }
-    });
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(params => {
+        const id = params.get('id');
+        if (id) {
+          this.idPersonaNatural = Number(id);
+        }
+        if (this.idPersonaNatural !== null) {
+          this.cargarPersonaNatural();
+        } else {
+          this.paginaCargada = true;
+        }
+      });
   }
 
+  /**
+   * Construye el formulario reactivo con las validaciones necesarias.
+   */
   private construirFormulario(): void {
     this.formularioPersonaNatural = this.formBuilder.group({
       correo_electronico: [null, [Validators.required, Validators.email]],
       identificacion: [null, [Validators.required, Validators.pattern(/^\d{10}$|^\d{13}$/)]],
       nombres: [null, [Validators.required]],
-      apellido_p: [null,],
-      apellido_m: [null,],
+      apellido_p: [null],
+      apellido_m: [null],
       celular: [null, [Validators.required, Validators.pattern(/^\d{10}$/)]],
       clave_acceso: [null, [Validators.required]],
       informacion_adicional: [null],
     });
   }
 
+  /**
+   * Carga los datos de la persona natural desde el backend para modo edición.
+   * Rellena el formulario con los datos obtenidos.
+   */
   private cargarPersonaNatural(): void {
     if (this.idPersonaNatural) {
-      this.personaNaturalService.obtenerPersonaNatural(this.idPersonaNatural).subscribe(
-        {
-          next: (personaNatural: PersonaNatural) => {
-            this.personaNatural = personaNatural;
-            this.formularioPersonaNatural.patchValue(personaNatural);
-            this.formularioPersonaNatural.get('correo_electronico')?.setValue(personaNatural.usuario.correo_electronico);
-            this.formularioPersonaNatural.get('celular')?.setValue(personaNatural.usuario.celular);
-          },
-          error: () => {
-            this.modalService.mostrar('error', 'No se pudieron cargar los datos');
-
-          },
-          complete: () => {
-            this.paginaCargada = true;
-          }
-        });
-
+      this.personaNaturalService.obtenerPersonaNatural(this.idPersonaNatural).subscribe({
+        next: (personaNatural: PersonaNatural) => {
+          this.personaNatural = personaNatural;
+          this.formularioPersonaNatural.patchValue(personaNatural);
+          this.formularioPersonaNatural.get('correo_electronico')?.setValue(personaNatural.usuario.correo_electronico);
+          this.formularioPersonaNatural.get('celular')?.setValue(personaNatural.usuario.celular);
+        },
+        error: () => {
+          this.modalService.mostrar('error', 'No se pudieron cargar los datos');
+        },
+        complete: () => {
+          this.paginaCargada = true;
+        }
+      });
     }
   }
 
+  /**
+   * Guarda la persona natural (crea o actualiza según el modo).
+   * Muestra feedback al usuario mediante modales.
+   */
   guardarPersonaNatural(): void {
     this.estado = 'cargando';
 
@@ -89,16 +103,12 @@ export class FormularioPersonaNaturalComponent implements OnInit {
       if (this.idPersonaNatural) {
         this.personaNaturalService.actualizarPersonaNatural(this.idPersonaNatural, this.formularioPersonaNatural.value).subscribe({
           next: (personaNatural: PersonaNatural) => {
-
             this.personaNatural = personaNatural;
             this.modalService.mostrar('success', 'Usuario actualizado exitosamente', '/admin/usuarios/lista-usuarios');
           },
           error: (error) => {
-            this.estado = "fallido";
+            this.estado = 'fallido';
             this.modalService.mostrar('error', this.modalService.formateoErrores(error.error));
-            console.log(error);
-
-
           },
           complete: () => {
             this.estado = 'exitoso';

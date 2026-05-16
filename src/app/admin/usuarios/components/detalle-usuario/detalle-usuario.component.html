@@ -3,32 +3,39 @@
     nzClosable="false" [(nzVisible)]="modalVisible">
     <ng-template #tituloModal><b>Detalle Cliente</b></ng-template>
     <ng-template #detallePersona>
-        <ng-container *ngIf="personaNatural; else juridicaTemplate">
-            <p><b>Usuario: </b> {{ personaNatural.usuario.correo_electronico }}</p>
-            <p><b>Clave de Acceso:</b> {{ personaNatural.clave_acceso }}</p>
-            <p><b>Cédula/RUC: </b>{{ personaNatural.identificacion }}</p>
-            <p>
-                <b>Nombres: </b>
-                {{ personaNatural.nombres + ' ' + personaNatural.apellido_p + ' ' + personaNatural.apellido_m}}
-            </p>
-            <p><b>Celular: </b>{{ personaNatural.usuario.celular }}</p>
-            <p><b>Información Adicional:</b></p>
-            <textarea nz-input readOnly>{{ personaNatural.informacion_adicional }}</textarea>
-        </ng-container>
-        <ng-template #juridicaTemplate>
-            <ng-container *ngIf="personaJuridica; else noDataTemplate">
-                <p><b>Usuario: </b> {{ personaJuridica.usuario.correo_electronico }}</p>
-                <p><b>Clave de Acceso:</b> {{ personaJuridica.clave_acceso }}</p>
-                <p><b>RUC: </b>{{ personaJuridica.ruc }}</p>
-                <p><b>Razón Social: </b>{{ personaJuridica.razon_social }}</p>
-                <p><b>Celular: </b>{{ personaJuridica.usuario.celular }}</p>
+        <div *ngIf="cargando" style="text-align: center; padding: 30px;">
+            <nz-spin nzSimple nzTip="Cargando detalles..."></nz-spin>
+        </div>
+
+        <div *ngIf="!cargando && !errorCarga">
+            <ng-container *ngIf="personaNatural; else juridicaTemplate">
+                <p><b>Usuario: </b> {{ personaNatural.usuario.correo_electronico }}</p>
+                <p><b>Clave de Acceso:</b> {{ personaNatural.clave_acceso }}</p>
+                <p><b>Cédula/RUC: </b>{{ personaNatural.identificacion }}</p>
+                <p>
+                    <b>Nombres: </b>
+                    {{ personaNatural.nombres + ' ' + personaNatural.apellido_p + ' ' + personaNatural.apellido_m}}
+                </p>
+                <p><b>Celular: </b>{{ personaNatural.usuario.celular }}</p>
                 <p><b>Información Adicional:</b></p>
-                <textarea nz-input readOnly>{{ personaJuridica.informacion_adicional }}</textarea>
+                <textarea nz-input readOnly>{{ personaNatural.informacion_adicional }}</textarea>
             </ng-container>
-        </ng-template>
-        <ng-template #noDataTemplate>
+            <ng-template #juridicaTemplate>
+                <ng-container *ngIf="personaJuridica">
+                    <p><b>Usuario: </b> {{ personaJuridica.usuario.correo_electronico }}</p>
+                    <p><b>Clave de Acceso:</b> {{ personaJuridica.clave_acceso }}</p>
+                    <p><b>RUC: </b>{{ personaJuridica.ruc }}</p>
+                    <p><b>Razón Social: </b>{{ personaJuridica.razon_social }}</p>
+                    <p><b>Celular: </b>{{ personaJuridica.usuario.celular }}</p>
+                    <p><b>Información Adicional:</b></p>
+                    <textarea nz-input readOnly>{{ personaJuridica.informacion_adicional }}</textarea>
+                </ng-container>
+            </ng-template>
+        </div>
+        
+        <div *ngIf="errorCarga">
             <p>No se ha podido cargar los datos del cliente</p>
-        </ng-template>
+        </div>
     </ng-template>
     <ng-template #botonesModal>
         <button nz-button nzType="primary" (click)="editarUsuario()">Editar</button>

@@ -1,0 +1,91 @@
+﻿# Reglas y Estándares del Proyecto (Frontend - Angular 17)
+
+Como desarrollador senior, aplico las siguientes convenciones y mejores prácticas para garantizar un código limpio, mantenible y escalable en el desarrollo de la aplicación Angular.
+
+## 1. Idiomas y Nomenclatura
+- **Comunicación General:** Mis explicaciones y respuestas en el chat deben ser SIEMPRE en **español**.
+- **Comentarios en el Código:** Todos los comentarios y notas TODO dentro del código fuente deben escribirse en **español**.
+- **Nombres en el Código:** Variables, clases, componentes, servicios y nombres de archivos deben nombrarse SIEMPRE en **español** cuando representen conceptos del dominio (ej. `CrearClienteComponent`, `formularioCliente`), y en **inglés** cuando sean técnicos/genéricos de Angular (ej. `DestroyRef`, `OnInit`).
+- **Convención de Casos (Casing):**
+  - Utilizar **`camelCase`** para variables, propiedades y métodos (ej. `esModoEditar`, `saveCliente()`).
+  - Utilizar **`PascalCase`** para Clases, Interfaces, Componentes y DTOs (ej. `ClienteService`, `CreateVehiculoDTO`).
+  - Utilizar **`kebab-case`** para nombres de archivos y selectores de componentes (ej. `crear-cliente.component.ts`, `app-crear-cliente`).
+
+## 2. Documentación Obligatoria
+- **Funciones y Métodos Públicos:** Cada función pública debe incluir un bloque de documentación JSDoc en español explicando:
+  - Un breve resumen de qué hace la función.
+  - Los parámetros esperados (`@param`): su tipo y para qué sirven.
+  - El valor de retorno (`@returns`), si aplica.
+
+## 3. Arquitectura y Estructura del Proyecto
+- **Estructura de carpetas:**
+  - `core/models/` — Interfaces y DTOs del dominio.
+  - `core/services/` — Servicios inyectables que comunican con el API.
+  - `interceptors/` — Interceptores HTTP (token, errores).
+  - `guards/` — Guards de ruta (autenticación, redirección).
+  - `admin/<modulo>/components/` — Componentes organizados por módulo de negocio.
+- **Módulos Lazy-Loaded:** Cada módulo de negocio (clientes, vehículos, fichas) debe tener su propio módulo y routing cargados de forma diferida (lazy loading).
+- **Servicios Singleton:** Todos los servicios deben estar decorados con `providedIn: 'root'` para garantizar una única instancia global.
+
+## 4. Comunicación con el API (HttpClient)
+- **NUNCA usar `JSON.stringify()` manualmente.** Angular `HttpClient` serializa automáticamente los objetos a JSON y establece el `Content-Type: application/json`.
+- **Pasar el objeto directamente** al método HTTP (`post`, `put`, `patch`). Ejemplo correcto:
+  ```typescript
+  this.http.post<ApiResponse<Cliente>>(url, clienteDTO, { context: checkToken() });
+  ```
+- **Los headers `Content-Type` y `Accept`** se gestionan automáticamente por el `tokenInterceptor`. NO ponerlos manualmente en cada servicio.
+- **Toda petición autenticada** debe incluir `{ context: checkToken() }` para activar el interceptor de token.
+- **Login es la única excepción:** Al no tener token aún, debe incluir sus headers manualmente.
+
+## 5. Tipado y Modelos
+- **Evitar `any`:** Tipar siempre las respuestas HTTP. Usar `ApiResponse<T>` para métodos que devuelven la respuesta estándar del backend.
+- **Usar `Omit` correctamente:** La sintaxis correcta es `Omit<Type, 'key1' | 'key2'>` con llaves por separado (NO `'key1 | key2'`).
+- **Interfaces de respuesta:** Usar `ApiResponse<T>` (de `core/models/api-response.model.ts`) para tipar las respuestas envolventes del backend (`{ status, message, data }`).
+
+## 6. Inyección de Dependencias
+- **Usar SIEMPRE `inject()`** (estilo moderno de Angular 17+) en vez de inyección por constructor.
+  ```typescript
+  // ✅ Correcto
+  private http = inject(HttpClient);
+
+  // ❌ Incorrecto
+  constructor(private http: HttpClient) { }
+  ```
+- Agrupar todas las inyecciones como propiedades privadas al inicio de la clase, después de las propiedades públicas.
+
+## 7. Gestión de Suscripciones (Memory Leaks)
+- **En componentes**, las suscripciones a observables de larga duración (como `valueChanges`, `paramMap`, servicios de estado) DEBEN usar `takeUntilDestroyed(this.destroyRef)` para cancelarse automáticamente al destruir el componente.
+  ```typescript
+  private destroyRef = inject(DestroyRef);
+
+  ngOnInit(): void {
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(...);
+  }
+  ```
+- Las suscripciones HTTP de una sola vez (GET, POST, etc.) NO necesitan `takeUntilDestroyed` ya que se completan automáticamente.
+
+## 8. Manejo de Errores
+- **Interceptor global:** El `errorInterceptor` maneja errores comunes (401 → logout, 0 → sin conexión).
+- **Errores HTTP del backend:** Usar `this.modal.mostrarErrorHttp(error)` del `ModalService` en vez de parsear manualmente el objeto de error en cada componente.
+- **Errores de validación:** El backend retorna errores en formato `{ errors: { campo: ["mensaje"] } }` — `mostrarErrorHttp` ya los maneja.
+
+## 9. Formularios Reactivos
+- Construir formularios con `FormBuilder` + `ReactiveFormsModule`.
+- Inicializar el formulario en el constructor o en un método `buildForm()` privado.
+- Usar `patchValue()` para cargar datos existentes en modo edición.
+- Validar con `Validators` de Angular antes de enviar al backend.
+
+## 10. UI y Componentes Visuales
+- La librería de componentes es **NG-Zorro (Ant Design for Angular)** versión 17.
+- Los módulos de NG-Zorro se re-exportan centralizadamente desde `ng-zorro/ng-zorro.module.ts`.
+- Usar modales del `ModalService` para feedback al usuario (éxito, error, advertencia).
+
+## 11. Environments
+- `environment.development.ts` — URL del API local (`http://localhost:8000/api/`).
+- `environment.ts` — URL del API de producción.
+- Importar SIEMPRE desde `environment.development` en servicios (Angular reemplaza automáticamente en build de producción según `angular.json`).
+
+## 12. Capacidades del Asistente (AI)
+- **Autonomía:** Tengo total permiso y capacidad para leer, editar, crear, eliminar o realizar cualquier acción necesaria sobre los archivos y carpetas del proyecto para cumplir con los requerimientos.

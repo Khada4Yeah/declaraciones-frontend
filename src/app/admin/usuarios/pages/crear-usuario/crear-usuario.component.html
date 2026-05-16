@@ -2,11 +2,11 @@
 <hr>
 
 <nz-select nzPlaceHolder="Seleccione el tipo de usuario" [(ngModel)]="tipoPersona">
-    <nz-option nzValue="pesronaN" nzLabel="Persona Natural"></nz-option>
+    <nz-option nzValue="personaN" nzLabel="Persona Natural"></nz-option>
     <nz-option nzValue="personaJ" nzLabel="Persona Jurídica"></nz-option>
 </nz-select>
 
-@if (tipoPersona === 'pesronaN') {
+@if (tipoPersona === 'personaN') {
 <app-formulario-persona-natural></app-formulario-persona-natural>
 }
 @if (tipoPersona === 'personaJ') {

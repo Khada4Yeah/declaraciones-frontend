@@ -4,108 +4,147 @@ import {
   EventEmitter,
   inject,
   Input,
-  OnInit,
   Output,
 } from '@angular/core';
 import { PersonaJuridica } from '../../models/persona-juridica.model';
 import { PersonaNatural } from '../../models/persona-natural.model';
 import { Router } from '@angular/router';
-import { EncriptacionService } from '../../../../core/services/encriptacion.service';
 import { PersonaJuridicaService } from '../../services/persona-juridica.service';
 import { PersonaNaturalService } from '../../services/persona-natural.service';
 import { ModalService } from '../../../../core/services/modal.service';
 
+/**
+ * Componente que muestra los detalles de un usuario (persona natural o jurídica)
+ * en un modal. Permite editar y eliminar el usuario.
+ */
 @Component({
   selector: 'app-detalle-usuario',
   templateUrl: './detalle-usuario.component.html',
   styleUrls: ['./detalle-usuario.component.scss'],
 })
-export class DetalleUsuarioComponent implements OnInit {
-  @Input() personaNatural: PersonaNatural | null = null;
-  @Input() personaJuridica: PersonaJuridica | null = null;
+export class DetalleUsuarioComponent {
+  personaNatural: PersonaNatural | null = null;
+  personaJuridica: PersonaJuridica | null = null;
+  cargando: boolean = false;
+  errorCarga: boolean = false;
+
+  @Input() set personaNaturalInput(val: PersonaNatural | null) {
+    if (val) {
+      this.cargando = true;
+      this.errorCarga = false;
+      this.personaNaturalService.obtenerPersonaNatural(val.id_persona_natural).subscribe({
+        next: (data) => {
+          this.personaNatural = data;
+          this.cargando = false;
+        },
+        error: () => {
+          this.cargando = false;
+          this.errorCarga = true;
+          this.modalService.mostrar('error', 'No se pudieron cargar los detalles');
+        }
+      });
+    } else {
+      this.personaNatural = null;
+    }
+  }
+
+  @Input() set personaJuridicaInput(val: PersonaJuridica | null) {
+    if (val) {
+      this.cargando = true;
+      this.errorCarga = false;
+      this.personaJuridicaService.obtenerPersonaJuridica(val.id_persona_juridica).subscribe({
+        next: (data) => {
+          this.personaJuridica = data;
+          this.cargando = false;
+        },
+        error: () => {
+          this.cargando = false;
+          this.errorCarga = true;
+          this.modalService.mostrar('error', 'No se pudieron cargar los detalles');
+        }
+      });
+    } else {
+      this.personaJuridica = null;
+    }
+  }
+
   @Input() modalVisible: boolean = false;
   @Output() cerrarModal: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   private router = inject(Router);
-  private encriptacionService = inject(EncriptacionService);
   private personaNaturalService = inject(PersonaNaturalService);
   private personaJuridicaService = inject(PersonaJuridicaService);
   private modalService = inject(ModalService);
 
-  constructor() { }
-
-  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
-  ngOnInit(): void { }
-
+  /**
+   * Cierra el modal de detalle emitiendo el evento correspondiente.
+   */
   cerrarModalUsuario(): void {
     this.cerrarModal.emit(false);
   }
 
+  /**
+   * Navega a la página de edición del usuario actual.
+   * Utiliza el ID directo sin encriptación en la URL.
+   */
   editarUsuario(): void {
     if (this.personaNatural || this.personaJuridica) {
-      let id: string | null = null;
+      let id: number | null = null;
+      let tipoPersona = '';
 
       if (this.personaNatural) {
-        id = this.encriptacionService.encriptar(
-          this.personaNatural.id_persona_natural.toString()
-        );
+        id = this.personaNatural.id_persona_natural;
+        tipoPersona = 'natural';
       } else if (this.personaJuridica) {
-        id = this.encriptacionService.encriptar(
-          this.personaJuridica.id_persona_juridica.toString()
-        );
+        id = this.personaJuridica.id_persona_juridica;
+        tipoPersona = 'juridica';
       }
 
       if (id) {
         this.router.navigate(['admin', 'usuarios', 'editar-usuario', id], {
-          queryParams: {
-            tipoPersona: this.personaNatural ? 'natural' : 'juridica',
-          },
+          queryParams: { tipoPersona },
         });
-      } else {
-        console.error('Error al obtener el usuario');
       }
     }
   }
 
-  eliminarUsuario(): boolean {
-    if (this.personaNatural || this.personaJuridica) {
-
-      if (this.personaNatural) {
-        this.personaNaturalService
-          .eliminarPersonaNatural(this.personaNatural.id_persona_natural)
-          .subscribe({
-            next: () => {
-              this.cerrarModalUsuario();
-
-              this.modalService.mostrar(
-                'success',
-                'Usuario eliminado correctamente', undefined, true
-              );
-            },
-            error: () => {
-              this.modalService.mostrar('error', "No se pudo eliminar el usuario");
-            },
-          });
-      }
-
-      if (this.personaJuridica) {
-        this.personaJuridicaService
-          .eliminarPersonaJuridica(this.personaJuridica.id_persona_juridica)
-          .subscribe({
-            next: () => {
-              this.cerrarModalUsuario();
-              this.modalService.mostrar(
-                'success',
-                'Usuario eliminado correctamente', undefined, true
-              );
-            },
-            error: () => {
-              this.modalService.mostrar('error', "No se pudo eliminar el usuario");
-            },
+  /**
+   * Elimina el usuario actual (persona natural o jurídica).
+   * Muestra un modal de confirmación antes de la eliminación.
+   */
+  eliminarUsuario(): void {
+    if (this.personaNatural) {
+      this.personaNaturalService
+        .eliminarPersonaNatural(this.personaNatural.id_persona_natural)
+        .subscribe({
+          next: () => {
+            this.cerrarModalUsuario();
+            this.modalService.mostrar(
+              'success',
+              'Usuario eliminado correctamente', undefined, true
+            );
           },
-          );
-      }
+          error: () => {
+            this.modalService.mostrar('error', 'No se pudo eliminar el usuario');
+          },
+        });
     }
-    return false;
+
+    if (this.personaJuridica) {
+      this.personaJuridicaService
+        .eliminarPersonaJuridica(this.personaJuridica.id_persona_juridica)
+        .subscribe({
+          next: () => {
+            this.cerrarModalUsuario();
+            this.modalService.mostrar(
+              'success',
+              'Usuario eliminado correctamente', undefined, true
+            );
+          },
+          error: () => {
+            this.modalService.mostrar('error', 'No se pudo eliminar el usuario');
+          },
+        });
+    }
   }
 }

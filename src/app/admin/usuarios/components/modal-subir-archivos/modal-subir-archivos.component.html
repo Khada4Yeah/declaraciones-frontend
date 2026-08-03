@@ -1,6 +1,6 @@
 <!-- modal-subir-archivos.component.html -->
-<nz-modal [nzTitle]="tituloModal" [nzContent]="contenidoModal" [nzFooter]="botonesModal"
-    nzKeyboard="false" nzClosable="false" [(nzVisible)]="modalVisible" nzWidth="520px">
+<nz-modal [nzTitle]="tituloModal" [nzContent]="contenidoModal" [nzFooter]="botonesModal" nzKeyboard="false"
+    nzClosable="false" [(nzVisible)]="modalVisible" nzWidth="520px">
 
     <ng-template #tituloModal>
         <b><span nz-icon nzType="upload" nzTheme="outline"></span> Subir Archivos</b>
@@ -12,8 +12,7 @@
                 <!-- Selector de año -->
                 <div class="campo-anio">
                     <label><b>Año (carpeta):</b></label>
-                    <nz-select [(ngModel)]="anioSeleccionado" nzPlaceHolder="Seleccione un año"
-                        style="width: 100%;">
+                    <nz-select [(ngModel)]="anioSeleccionado" nzPlaceHolder="Seleccione un año" style="width: 100%;">
                         <nz-option *ngFor="let anio of aniosDisponibles" [nzValue]="anio"
                             [nzLabel]="anio.toString()"></nz-option>
                     </nz-select>

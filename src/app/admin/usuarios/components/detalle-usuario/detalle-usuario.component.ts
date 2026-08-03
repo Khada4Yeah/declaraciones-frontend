@@ -15,7 +15,8 @@ import { ModalService } from '../../../../core/services/modal.service';
 
 /**
  * Componente que muestra los detalles de un usuario (persona natural o jurídica)
- * en un modal. Permite editar y eliminar el usuario.
+ * en un modal. Permite editar, eliminar el usuario, y gestionar sus archivos
+ * mediante modales de subida y visualización.
  */
 @Component({
   selector: 'app-detalle-usuario',
@@ -27,6 +28,11 @@ export class DetalleUsuarioComponent {
   personaJuridica: PersonaJuridica | null = null;
   cargando: boolean = false;
   errorCarga: boolean = false;
+
+  /** Control de visibilidad del modal de subida de archivos */
+  modalSubirVisible: boolean = false;
+  /** Control de visibilidad del modal de visualización de archivos */
+  modalVerVisible: boolean = false;
 
   @Input() set personaNaturalInput(val: PersonaNatural | null) {
     if (val) {
@@ -81,6 +87,44 @@ export class DetalleUsuarioComponent {
    */
   cerrarModalUsuario(): void {
     this.cerrarModal.emit(false);
+  }
+
+  /**
+   * Obtiene el ID del usuario actual (sea persona natural o jurídica).
+   * Se utiliza para pasar como parámetro a los modales de archivos.
+   *
+   * @returns ID del usuario o null si no hay usuario cargado.
+   */
+  obtenerIdUsuario(): number | null {
+    if (this.personaNatural) {
+      return this.personaNatural.id_usuario;
+    }
+    if (this.personaJuridica) {
+      return this.personaJuridica.id_usuario;
+    }
+    return null;
+  }
+
+  /**
+   * Abre el modal de subida de archivos.
+   */
+  abrirModalSubirArchivos(): void {
+    this.modalSubirVisible = true;
+  }
+
+  /**
+   * Abre el modal de visualización de archivos.
+   */
+  abrirModalVerArchivos(): void {
+    this.modalVerVisible = true;
+  }
+
+  /**
+   * Callback cuando se suben archivos exitosamente.
+   * Se puede usar para actualizar la vista si es necesario.
+   */
+  onArchivosSubidos(): void {
+    // Se puede agregar lógica adicional aquí si es necesario
   }
 
   /**

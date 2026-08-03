@@ -10,6 +10,13 @@ import {
   ToolOutline,
   EyeInvisibleOutline,
   LockOutline,
+  UploadOutline,
+  DownloadOutline,
+  DeleteOutline,
+  FolderOutline,
+  FileOutline,
+  InboxOutline,
+  PlusOutline,
 } from '@ant-design/icons-angular/icons';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
@@ -24,6 +31,13 @@ const icons = [
   ToolOutline,
   EyeInvisibleOutline,
   LockOutline,
+  UploadOutline,
+  DownloadOutline,
+  DeleteOutline,
+  FolderOutline,
+  FileOutline,
+  InboxOutline,
+  PlusOutline,
 ];
 
 export function provideNzIcons(): EnvironmentProviders {

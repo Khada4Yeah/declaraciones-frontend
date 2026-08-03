@@ -32,15 +32,31 @@
                 </ng-container>
             </ng-template>
         </div>
-        
+
         <div *ngIf="errorCarga">
             <p>No se ha podido cargar los datos del cliente</p>
         </div>
     </ng-template>
     <ng-template #botonesModal>
+        <button nz-button nzType="default" (click)="abrirModalSubirArchivos()">
+            <span nz-icon nzType="upload" nzTheme="outline"></span> Subir Archivos
+        </button>
+        <button nz-button nzType="default" (click)="abrirModalVerArchivos()">
+            <span nz-icon nzType="folder" nzTheme="outline"></span> Ver Archivos
+        </button>
         <button nz-button nzType="primary" (click)="editarUsuario()">Editar</button>
         <button nz-button nzType="primary" nzDanger nzOkDanger nz-popconfirm nzPopconfirmTitle="¿Está seguro?"
             nzCancelText="Cancelar" (nzOnConfirm)="eliminarUsuario()">Eliminar</button>
         <button nz-button (click)="cerrarModalUsuario()">Cerrar</button>
     </ng-template>
 </nz-modal>
+
+<!-- Modal para subir archivos -->
+<app-modal-subir-archivos [modalVisible]="modalSubirVisible" [idUsuario]="obtenerIdUsuario()"
+    (cerrarModal)="modalSubirVisible = false" (archivosSubidos)="onArchivosSubidos()">
+</app-modal-subir-archivos>
+
+<!-- Modal para ver archivos -->
+<app-modal-ver-archivos [modalVisible]="modalVerVisible" [idUsuario]="obtenerIdUsuario()"
+    (cerrarModal)="modalVerVisible = false">
+</app-modal-ver-archivos>

@@ -1,0 +1,62 @@
+<!-- modal-subir-archivos.component.html -->
+<nz-modal [nzTitle]="tituloModal" [nzContent]="contenidoModal" [nzFooter]="botonesModal"
+    nzKeyboard="false" nzClosable="false" [(nzVisible)]="modalVisible" nzWidth="520px">
+
+    <ng-template #tituloModal>
+        <b><span nz-icon nzType="upload" nzTheme="outline"></span> Subir Archivos</b>
+    </ng-template>
+
+    <ng-template #contenidoModal>
+        <nz-spin [nzSpinning]="subiendo" nzTip="Subiendo archivos...">
+            <div class="subir-archivos-container">
+                <!-- Selector de año -->
+                <div class="campo-anio">
+                    <label><b>Año (carpeta):</b></label>
+                    <nz-select [(ngModel)]="anioSeleccionado" nzPlaceHolder="Seleccione un año"
+                        style="width: 100%;">
+                        <nz-option *ngFor="let anio of aniosDisponibles" [nzValue]="anio"
+                            [nzLabel]="anio.toString()"></nz-option>
+                    </nz-select>
+                </div>
+
+                <!-- Zona de carga de archivos -->
+                <div class="campo-archivos">
+                    <label><b>Archivos:</b></label>
+                    <nz-upload nzType="drag" [nzMultiple]="true" [nzBeforeUpload]="antesDeSubir"
+                        [nzFileList]="archivosParaSubir"
+                        nzAccept=".pdf,.xml,.jpg,.jpeg,.png,.xlsx,.xls,.docx,.doc,.csv,.txt,.zip">
+                        <p class="ant-upload-drag-icon">
+                            <span nz-icon nzType="inbox" nzTheme="outline"></span>
+                        </p>
+                        <p class="ant-upload-text">Haga clic o arrastre archivos aquí</p>
+                        <p class="ant-upload-hint">
+                            Tipos permitidos: PDF, XML, JPG, PNG, XLSX, DOCX, CSV, TXT, ZIP (Máx. 10MB c/u)
+                        </p>
+                    </nz-upload>
+                </div>
+
+                <!-- Lista de archivos seleccionados -->
+                <div class="lista-archivos" *ngIf="archivosParaSubir.length > 0">
+                    <label><b>Archivos seleccionados ({{ archivosParaSubir.length }}):</b></label>
+                    <div *ngFor="let file of archivosParaSubir" class="archivo-item">
+                        <span>
+                            <span nz-icon nzType="file" nzTheme="outline"></span>
+                            {{ file.name }}
+                        </span>
+                        <button nz-button nzType="text" nzDanger nzSize="small" (click)="removerArchivo(file)">
+                            <span nz-icon nzType="delete" nzTheme="outline"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nz-spin>
+    </ng-template>
+
+    <ng-template #botonesModal>
+        <button nz-button nzType="primary" (click)="subirArchivos()"
+            [disabled]="archivosParaSubir.length === 0 || subiendo">
+            <span nz-icon nzType="upload" nzTheme="outline"></span> Subir
+        </button>
+        <button nz-button (click)="cerrarModalSubir()" [disabled]="subiendo">Cancelar</button>
+    </ng-template>
+</nz-modal>

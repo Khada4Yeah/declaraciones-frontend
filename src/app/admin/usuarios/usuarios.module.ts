@@ -22,6 +22,13 @@ import { EditarUsuarioComponent } from './pages/editar-usuario/editar-usuario.co
 import { CrearUsuarioComponent } from './pages/crear-usuario/crear-usuario.component';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzListModule } from 'ng-zorro-antd/list';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+
+import { ModalSubirArchivosComponent } from './components/modal-subir-archivos/modal-subir-archivos.component';
+import { ModalVerArchivosComponent } from './components/modal-ver-archivos/modal-ver-archivos.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +38,9 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
     FormularioPersonaNaturalComponent,
     ListaUsuariosComponent,
     CrearUsuarioComponent,
-    EditarUsuarioComponent
+    EditarUsuarioComponent,
+    ModalSubirArchivosComponent,
+    ModalVerArchivosComponent
   ],
   imports: [
     CommonModule,
@@ -47,7 +56,11 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
     FormsModule,
     NzInputModule,
     NzPopconfirmModule,
-    NzEmptyModule
+    NzEmptyModule,
+    NzUploadModule,
+    NzListModule,
+    NzCheckboxModule,
+    NzToolTipModule
   ],
 })
 export class UsuariosModule { }

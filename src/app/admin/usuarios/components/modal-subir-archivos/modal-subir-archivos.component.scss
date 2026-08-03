@@ -1,0 +1,40 @@
+.subir-archivos-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.campo-anio,
+.campo-archivos {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lista-archivos {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.archivo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 4px;
+
+  span:first-child {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 380px;
+  }
+}

@@ -28,6 +28,11 @@ export class FormularioPersonaNaturalComponent implements OnInit {
   estado: EstadoSolicitud = 'inicial';
   personaNatural!: PersonaNatural;
   idPersonaNatural: number | null = null;
+  mostrarClave: boolean = false;
+
+  toggleMostrarClave(): void {
+    this.mostrarClave = !this.mostrarClave;
+  }
 
   constructor() {
     this.construirFormulario();

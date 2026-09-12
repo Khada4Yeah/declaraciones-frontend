@@ -28,6 +28,11 @@ export class FormularioPersonaJuridicaComponent implements OnInit {
   estado: EstadoSolicitud = 'inicial';
   personaJuridica!: PersonaJuridica;
   idPersonaJuridica: number | null = null;
+  mostrarClave: boolean = false;
+
+  toggleMostrarClave(): void {
+    this.mostrarClave = !this.mostrarClave;
+  }
 
   constructor() {
     this.construirFormulario();

@@ -1,8 +1,157 @@
-[nz-form] {
-    margin-top: 20px;
-    max-width: 600px;
+// formulario-persona-juridica.component.scss
+
+.form-cliente-moderno {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-nz-form-label {
-    font-weight: bold;
+.form-bloque-card {
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #fbfcfe;
+
+  .bloque-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+
+    .bloque-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+
+      &.icon-purple {
+        background: #f3e8ff;
+        color: #9333ea;
+      }
+
+      &.icon-emerald {
+        background: #ecfdf5;
+        color: #059669;
+      }
+
+      &.icon-slate {
+        background: #f1f5f9;
+        color: #475569;
+      }
+    }
+
+    .bloque-info {
+      h3 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+
+      p {
+        margin: 2px 0 0 0;
+        font-size: 12px;
+        color: #64748b;
+      }
+    }
+  }
+}
+
+.bloque-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-item-custom {
+  margin-bottom: 0;
+
+  nz-form-label {
+    padding-bottom: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+  }
+
+  .input-icon {
+    color: #94a3b8;
+    font-size: 15px;
+  }
+
+  input,
+  textarea {
+    border-radius: 8px;
+    border-color: #cbd5e1;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: #94a3b8;
+    }
+
+    &:focus {
+      border-color: #9333ea;
+      box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.12);
+    }
+  }
+
+  .password-toggle-icon {
+    color: #94a3b8;
+    font-size: 15px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #9333ea;
+    }
+  }
+}
+
+.form-footer-acciones {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+
+  .btn-form-cancelar {
+    border-radius: 8px;
+    height: 42px;
+    padding: 0 20px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .btn-form-guardar {
+    border-radius: 8px;
+    height: 42px;
+    padding: 0 24px;
+    font-weight: 600;
+    background: #9333ea;
+    border-color: #9333ea;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px -2px rgba(147, 51, 234, 0.25);
+
+    &:hover:not(:disabled) {
+      background: #7e22ce;
+      border-color: #7e22ce;
+      transform: translateY(-1px);
+    }
+  }
 }

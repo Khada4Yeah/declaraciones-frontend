@@ -1,14 +1,77 @@
-<h1>Crear Usuario</h1>
-<hr>
+<!-- crear-usuario.component.html -->
+<div class="crear-cliente-view">
+  <!-- Cabecera de Página con Navegación -->
+  <div class="page-header-cliente">
+    <a routerLink="/admin/usuarios/lista-usuarios" class="btn-regresar">
+      <span nz-icon nzType="arrow-left" nzTheme="outline"></span>
+      <span>Volver a la lista de clientes</span>
+    </a>
+    <div class="header-titulos">
+      <h1 class="titulo-principal">Nuevo Registro de Cliente</h1>
+      <p class="subtitulo-principal">
+        Selecciona el tipo de contribuyente y completa la información requerida para registrar el cliente en el sistema
+      </p>
+    </div>
+  </div>
 
-<nz-select nzPlaceHolder="Seleccione el tipo de usuario" [(ngModel)]="tipoPersona">
-    <nz-option nzValue="personaN" nzLabel="Persona Natural"></nz-option>
-    <nz-option nzValue="personaJ" nzLabel="Persona Jurídica"></nz-option>
-</nz-select>
+  <!-- Selector Visual de Tipo de Contribuyente -->
+  <div class="seccion-tipo-selector">
+    <div class="seccion-header-tag">
+      <span class="step-num">1</span>
+      <span class="step-title">Tipo de Contribuyente</span>
+    </div>
 
-@if (tipoPersona === 'personaN') {
-<app-formulario-persona-natural></app-formulario-persona-natural>
-}
-@if (tipoPersona === 'personaJ') {
-<app-formulario-persona-juridica></app-formulario-persona-juridica>
-}
+    <div class="tarjetas-tipo-grid">
+      <!-- Tarjeta: Persona Natural -->
+      <div class="tarjeta-tipo" [class.activa]="tipoPersona === 'personaN'" (click)="seleccionarTipo('personaN')">
+        <div class="radio-indicador">
+          <div class="radio-dot" *ngIf="tipoPersona === 'personaN'"></div>
+        </div>
+        <div class="tipo-icono-box tipo-natural">
+          <span nz-icon nzType="user" nzTheme="outline"></span>
+        </div>
+        <div class="tipo-contenido">
+          <div class="tipo-badge-row">
+            <h4>Persona Natural</h4>
+            <span class="badge-tag" *ngIf="tipoPersona === 'personaN'">Seleccionado</span>
+          </div>
+          <p>Personas individuales con cédula de identidad o RUC (profesionales, comerciantes, artesanos, etc.)</p>
+        </div>
+      </div>
+
+      <!-- Tarjeta: Persona Jurídica -->
+      <div class="tarjeta-tipo" [class.activa]="tipoPersona === 'personaJ'" (click)="seleccionarTipo('personaJ')">
+        <div class="radio-indicador">
+          <div class="radio-dot" *ngIf="tipoPersona === 'personaJ'"></div>
+        </div>
+        <div class="tipo-icono-box tipo-juridica">
+          <span nz-icon nzType="bank" nzTheme="outline"></span>
+        </div>
+        <div class="tipo-contenido">
+          <div class="tipo-badge-row">
+            <h4>Persona Jurídica</h4>
+            <span class="badge-tag badge-tag-purple" *ngIf="tipoPersona === 'personaJ'">Seleccionado</span>
+          </div>
+          <p>Sociedades, corporaciones, compañías limitadas (Cía. Ltda.), S.A. o SAS con RUC constituido</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor del Formulario -->
+  <div class="seccion-formulario-container">
+    <div class="seccion-header-tag">
+      <span class="step-num">2</span>
+      <span class="step-title">Datos del {{ tipoPersona === 'personaN' ? 'Cliente (Persona Natural)' : 'Cliente (Persona Jurídica)' }}</span>
+    </div>
+
+    <div class="formulario-card-wrapper">
+      @if (tipoPersona === 'personaN') {
+        <app-formulario-persona-natural></app-formulario-persona-natural>
+      }
+      @if (tipoPersona === 'personaJ') {
+        <app-formulario-persona-juridica></app-formulario-persona-juridica>
+      }
+    </div>
+  </div>
+</div>

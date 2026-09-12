@@ -1,100 +1,148 @@
-<nz-spin [nzSpinning]="!paginaCargada" [nzTip]="'Cargando formulario...'">
-</nz-spin>
+<!-- formulario-persona-juridica.component.html -->
+<nz-spin [nzSpinning]="!paginaCargada" nzTip="Cargando formulario...">
+  <form nz-form nzLayout="vertical" [formGroup]="formularioPersonaJuridica" (ngSubmit)="guardarPersonaJuridica()"
+    *ngIf="paginaCargada" class="form-cliente-moderno">
 
-<form nz-form nzLayout="vertical" [formGroup]="formularioPersonaJuridica" (ngSubmit)="guardarPersonaJuridica()"
-    *ngIf="paginaCargada">
-    <nz-form-item>
-        <nz-form-label nzRequired>
-            Usuario
-        </nz-form-label>
-        <nz-form-control [nzErrorTip]="usuarioErrorTpl">
-            <input nz-input formControlName="correo_electronico" placeholder="Usuario" />
-            <ng-template #usuarioErrorTpl let-control>
-                @if (control.errors?.['required']) {
-                Ingrese el usuario
-                }
-                @if (control.errors?.['email']) {
-                Ingrese un correo electrónico válido
-                }
-            </ng-template>
-        </nz-form-control>
-    </nz-form-item>
+    <!-- Sección 1: Datos de la Empresa -->
+    <div class="form-bloque-card">
+      <div class="bloque-header">
+        <div class="bloque-icon icon-purple">
+          <span nz-icon nzType="bank" nzTheme="outline"></span>
+        </div>
+        <div class="bloque-info">
+          <h3>Datos de la Empresa / Sociedad</h3>
+          <p>Identificación tributaria y razón social de la persona jurídica</p>
+        </div>
+      </div>
 
-    <nz-form-item>
-        <nz-form-label nzRequired>
-            Clave de acceso
-        </nz-form-label>
-        <nz-form-control [nzErrorTip]="claveAccesoErrorTpl">
-            <input nz-input formControlName="clave_acceso" placeholder="Clave de acceso" />
-            <ng-template #claveAccesoErrorTpl let-control>
-                @if (control.errors?.['required']) {
-                Ingrese la clave de acceso
-                }
-            </ng-template>
-        </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-        <nz-form-label nzRequired>
-            RUC
-        </nz-form-label>
-        <nz-form-control [nzErrorTip]="rucErrorTpl">
-            <input nz-input formControlName="ruc" placeholder="RUC" />
+      <div class="bloque-grid-2">
+        <!-- RUC -->
+        <nz-form-item class="form-item-custom">
+          <nz-form-label nzRequired nzFor="ruc">RUC de la Empresa</nz-form-label>
+          <nz-form-control [nzErrorTip]="rucErrorTpl">
+            <nz-input-group [nzPrefix]="prefixRuc">
+              <input nz-input formControlName="ruc" id="ruc" placeholder="Ej. 1791234567001" maxlength="13" />
+            </nz-input-group>
+            <ng-template #prefixRuc><span nz-icon nzType="idcard" class="input-icon"></span></ng-template>
             <ng-template #rucErrorTpl let-control>
-                @if (control.errors?.['required']) {
-                Ingrese el RUC
-                }
-                @if(control.errors?.['pattern']) {
-                Ingrese un RUC válido
-                }
+              @if (control.errors?.['required']) { Ingrese el RUC de la empresa }
+              @if (control.errors?.['pattern']) { Debe ser un RUC válido de 13 dígitos }
             </ng-template>
-        </nz-form-control>
-    </nz-form-item>
+          </nz-form-control>
+        </nz-form-item>
 
-    <nz-form-item>
-        <nz-form-label nzRequired>
-            Razón social
-        </nz-form-label>
-        <nz-form-control [nzErrorTip]="razonSocialErrorTpl">
-            <input nz-input formControlName="razon_social" placeholder="Razón social" />
-            <ng-template #razonSocialErrorTpl let-control>
-                @if (control.errors?.['required']) {
-                Ingrese la razón social
-                }
-            </ng-template>
-        </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-        <nz-form-label nzRequired>
-            Celular
-        </nz-form-label>
-        <nz-form-control [nzErrorTip]="celularErrorTpl">
-            <input nz-input formControlName="celular" placeholder="Celular" />
+        <!-- Celular -->
+        <nz-form-item class="form-item-custom">
+          <nz-form-label nzRequired nzFor="celular_j">Teléfono / Celular de Contacto</nz-form-label>
+          <nz-form-control [nzErrorTip]="celularErrorTpl">
+            <nz-input-group [nzPrefix]="prefixTelJ">
+              <input nz-input formControlName="celular" id="celular_j" placeholder="Ej. 0991234567" maxlength="10" />
+            </nz-input-group>
+            <ng-template #prefixTelJ><span nz-icon nzType="phone" class="input-icon"></span></ng-template>
             <ng-template #celularErrorTpl let-control>
-                @if (control.errors?.['required']) {
-                Ingrese el celular
-                }
-                @if (control.errors?.['pattern']) {
-                Ingrese un celular válido
-                }
+              @if (control.errors?.['required']) { Ingrese el número de contacto }
+              @if (control.errors?.['pattern']) { Ingrese un número válido de 10 dígitos }
             </ng-template>
-        </nz-form-control>
-    </nz-form-item>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
 
-    <nz-form-item>
-        <nz-form-label>
-            Información Adicional
-        </nz-form-label>
-        <nz-form-control>
-            <textarea nz-input formControlName="informacion_adicional" placeholder="Información adicional"></textarea>
+      <!-- Razón Social (ancho completo) -->
+      <nz-form-item class="form-item-custom">
+        <nz-form-label nzRequired nzFor="razon_social">Razón Social</nz-form-label>
+        <nz-form-control [nzErrorTip]="razonSocialErrorTpl">
+          <nz-input-group [nzPrefix]="prefixRazon">
+            <input nz-input formControlName="razon_social" id="razon_social"
+              placeholder="Ej. Corporación Favorita C.A. o Servitecnia S.A.S." />
+          </nz-input-group>
+          <ng-template #prefixRazon><span nz-icon nzType="bank" class="input-icon"></span></ng-template>
+          <ng-template #razonSocialErrorTpl let-control>
+            @if (control.errors?.['required']) { Ingrese la razón social de la empresa }
+          </ng-template>
         </nz-form-control>
-    </nz-form-item>
+      </nz-form-item>
+    </div>
 
-    <nz-form-item>
+    <!-- Sección 2: Credenciales de Acceso (Portal SRI) -->
+    <div class="form-bloque-card">
+      <div class="bloque-header">
+        <div class="bloque-icon icon-emerald">
+          <span nz-icon nzType="key" nzTheme="outline"></span>
+        </div>
+        <div class="bloque-info">
+          <h3>Credenciales del Portal SRI</h3>
+          <p>Datos de acceso necesarios para consultar declaraciones y facturación electrónica</p>
+        </div>
+      </div>
+
+      <div class="bloque-grid-2">
+        <!-- Usuario (Email) -->
+        <nz-form-item class="form-item-custom">
+          <nz-form-label nzRequired nzFor="correo_electronico_j">Correo Electrónico (Usuario)</nz-form-label>
+          <nz-form-control [nzErrorTip]="usuarioErrorTpl">
+            <nz-input-group [nzPrefix]="prefixMailJ">
+              <input nz-input formControlName="correo_electronico" id="correo_electronico_j"
+                placeholder="empresa@ejemplo.com" type="email" />
+            </nz-input-group>
+            <ng-template #prefixMailJ><span nz-icon nzType="mail" class="input-icon"></span></ng-template>
+            <ng-template #usuarioErrorTpl let-control>
+              @if (control.errors?.['required']) { Ingrese el correo electrónico }
+              @if (control.errors?.['email']) { Ingrese un correo electrónico válido }
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- Clave de Acceso -->
+        <nz-form-item class="form-item-custom">
+          <nz-form-label nzRequired nzFor="clave_acceso_j">Clave de Acceso SRI</nz-form-label>
+          <nz-form-control [nzErrorTip]="claveAccesoErrorTpl">
+            <nz-input-group [nzPrefix]="prefixLockJ" [nzSuffix]="suffixLockJ">
+              <input nz-input [type]="mostrarClave ? 'text' : 'password'" formControlName="clave_acceso"
+                id="clave_acceso_j" placeholder="Contraseña del portal" />
+            </nz-input-group>
+            <ng-template #prefixLockJ><span nz-icon nzType="lock" class="input-icon"></span></ng-template>
+            <ng-template #suffixLockJ>
+              <span nz-icon [nzType]="mostrarClave ? 'eye-invisible' : 'eye'" (click)="toggleMostrarClave()"
+                class="password-toggle-icon" nz-tooltip [nzTooltipTitle]="mostrarClave ? 'Ocultar clave' : 'Ver clave'"></span>
+            </ng-template>
+            <ng-template #claveAccesoErrorTpl let-control>
+              @if (control.errors?.['required']) { Ingrese la clave de acceso }
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <!-- Sección 3: Información Adicional y Notas -->
+    <div class="form-bloque-card">
+      <div class="bloque-header">
+        <div class="bloque-icon icon-slate">
+          <span nz-icon nzType="file-text" nzTheme="outline"></span>
+        </div>
+        <div class="bloque-info">
+          <h3>Información Adicional (Opcional)</h3>
+          <p>Representante legal, apoderado, notas tributarias u observaciones especiales</p>
+        </div>
+      </div>
+
+      <nz-form-item class="form-item-custom">
         <nz-form-control>
-            <button nz-button nzType="primary" [nzLoading]="estado==='cargando'"
-                [disabled]="formularioPersonaJuridica.invalid">Guardar</button>
+          <textarea nz-input formControlName="informacion_adicional" id="informacion_adicional_j" rows="3"
+            placeholder="Escribe notas adicionales sobre la empresa (contacto del contador, tipo de contribuyente especial, etc.)"></textarea>
         </nz-form-control>
-    </nz-form-item>
-</form>
+      </nz-form-item>
+    </div>
+
+    <!-- Acciones del Formulario -->
+    <div class="form-footer-acciones">
+      <a nz-button nzType="default" routerLink="/admin/usuarios/lista-usuarios" class="btn-form-cancelar">
+        Cancelar
+      </a>
+      <button nz-button nzType="primary" [nzLoading]="estado === 'cargando'"
+        [disabled]="formularioPersonaJuridica.invalid" class="btn-form-guardar">
+        <span nz-icon nzType="check" nzTheme="outline"></span>
+        <span>{{ idPersonaJuridica ? 'Actualizar Empresa' : 'Guardar Empresa' }}</span>
+      </button>
+    </div>
+  </form>
+</nz-spin>

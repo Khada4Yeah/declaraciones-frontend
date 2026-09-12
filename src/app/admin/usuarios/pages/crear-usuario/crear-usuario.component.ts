@@ -6,10 +6,9 @@ import { Component } from '@angular/core';
   styleUrl: './crear-usuario.component.scss'
 })
 export class CrearUsuarioComponent {
-  tipoPersona: string | null;
+  tipoPersona: 'personaN' | 'personaJ' = 'personaN';
 
-  constructor() {
-    this.tipoPersona = null;
+  seleccionarTipo(tipo: 'personaN' | 'personaJ'): void {
+    this.tipoPersona = tipo;
   }
-
 }

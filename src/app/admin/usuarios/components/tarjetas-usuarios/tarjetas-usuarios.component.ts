@@ -73,7 +73,6 @@ export class TarjetasUsuariosComponent implements OnInit {
         this.personasJuridicas = juridicas;
         this.construirClientesUnificados();
       },
-      error: () => this.modalService.mostrar('error', 'No se pudieron cargar los datos'),
       complete: () => this.paginaCargada = true
     });
   }

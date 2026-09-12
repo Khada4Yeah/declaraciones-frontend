@@ -1,17 +1,223 @@
-@media (min-width: 576px) {
-    nz-select {
-        width: 300px;
-    }
+// crear-usuario.component.scss
 
+.crear-cliente-view {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 8px 0 40px 0;
 }
 
-@media (max-width: 576px) {
-    nz-input-group {
-        width: 100%;
-    }
+// Cabecera de Página
+.page-header-cliente {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 
-}
-
-h1 {
+  .btn-regresar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
     font-weight: 600;
+    color: #64748b;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    width: fit-content;
+
+    &:hover {
+      color: #0284c7;
+      transform: translateX(-3px);
+    }
+  }
+
+  .header-titulos {
+    .titulo-principal {
+      font-size: 24px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+      margin: 0 0 6px 0;
+    }
+
+    .subtitulo-principal {
+      font-size: 14px;
+      color: #64748b;
+      margin: 0;
+      line-height: 1.5;
+    }
+  }
+}
+
+// Selector Visual de Tipo
+.seccion-tipo-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.seccion-header-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .step-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #0284c7;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .step-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+}
+
+.tarjetas-tipo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tarjeta-tipo {
+  position: relative;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    border-color: #cbd5e1;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.06);
+  }
+
+  &.activa {
+    border-color: #0284c7;
+    background: #f0f9ff;
+    box-shadow: 0 8px 20px -6px rgba(2, 132, 199, 0.18);
+
+    .radio-indicador {
+      border-color: #0284c7;
+    }
+  }
+
+  .radio-indicador {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3px;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+
+    .radio-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #0284c7;
+    }
+  }
+
+  .tipo-icono-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+
+    &.tipo-natural {
+      background: #e0f2fe;
+      color: #0284c7;
+    }
+
+    &.tipo-juridica {
+      background: #f3e8ff;
+      color: #9333ea;
+    }
+  }
+
+  .tipo-contenido {
+    flex: 1;
+    min-width: 0;
+
+    .tipo-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+
+      h4 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+
+      .badge-tag {
+        font-size: 11px;
+        font-weight: 700;
+        background: #0284c7;
+        color: #ffffff;
+        padding: 1px 8px;
+        border-radius: 12px;
+
+        &.badge-tag-purple {
+          background: #9333ea;
+        }
+      }
+    }
+
+    p {
+      margin: 0;
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.4;
+    }
+  }
+}
+
+// Contenedor Formulario
+.seccion-formulario-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.formulario-card-wrapper {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+
+  @media (max-width: 640px) {
+    padding: 18px;
+  }
 }

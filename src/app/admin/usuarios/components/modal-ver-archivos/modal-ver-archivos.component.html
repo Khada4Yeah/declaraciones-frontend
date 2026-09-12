@@ -1,70 +1,111 @@
 <!-- modal-ver-archivos.component.html -->
 <nz-modal [nzTitle]="tituloModal" [nzContent]="contenidoModal" [nzFooter]="botonesModal"
-    nzKeyboard="false" nzClosable="false" [(nzVisible)]="modalVisible" nzWidth="720px">
+    nzKeyboard="false" nzClosable="false" [(nzVisible)]="modalVisible" nzWidth="740px" nzCentered>
 
     <ng-template #tituloModal>
-        <b><span nz-icon nzType="folder" nzTheme="outline"></span> Archivos del Cliente</b>
+        <div class="modal-titulo-custom">
+            <div class="modal-titulo-icono">
+                <span nz-icon nzType="folder-open" nzTheme="outline"></span>
+            </div>
+            <div class="modal-titulo-textos">
+                <h3>Documentos del Cliente</h3>
+                <p>Explora, descarga o administra los comprobantes y declaraciones por año</p>
+            </div>
+        </div>
     </ng-template>
 
     <ng-template #contenidoModal>
         <nz-spin [nzSpinning]="cargando || descargando"
-            [nzTip]="descargando ? 'Descargando...' : 'Cargando archivos...'">
+            [nzTip]="descargando ? 'Preparando descarga de archivos...' : 'Cargando documentos...'">
             <div class="ver-archivos-container">
-                <!-- Selector de año -->
-                <div class="campo-anio">
-                    <label><b>Carpeta (año):</b></label>
-                    <nz-select [(ngModel)]="anioSeleccionado" nzPlaceHolder="Seleccione un año"
-                        (ngModelChange)="onAnioChange()" style="width: 200px;">
-                        <nz-option *ngFor="let anio of aniosDisponibles" [nzValue]="anio"
-                            [nzLabel]="anio.toString()"></nz-option>
-                    </nz-select>
+                <!-- Barra superior de navegación por año y filtros -->
+                <div class="toolbar-archivos">
+                    <div class="toolbar-anio">
+                        <span nz-icon nzType="folder" nzTheme="outline" class="folder-ico"></span>
+                        <label for="selectAnioVer">Carpeta (Año):</label>
+                        <nz-select id="selectAnioVer" [(ngModel)]="anioSeleccionado" nzPlaceHolder="Seleccionar año"
+                            (ngModelChange)="onAnioChange()" class="select-anio-ver">
+                            <nz-option *ngFor="let anio of aniosDisponibles" [nzValue]="anio"
+                                [nzLabel]="'Año ' + anio.toString()"></nz-option>
+                        </nz-select>
+                    </div>
+
+                    <div class="toolbar-stats" *ngIf="archivos.length > 0">
+                        <span class="badge-contador-archivos">
+                            {{ archivos.length }} documento{{ archivos.length > 1 ? 's' : '' }}
+                        </span>
+                    </div>
                 </div>
 
-                <!-- Estado vacío -->
-                <div *ngIf="!cargando && archivos.length === 0 && anioSeleccionado" class="estado-vacio">
-                    <nz-empty nzNotFoundContent="No hay archivos en este año"></nz-empty>
+                <!-- Estado vacío cuando no hay archivos en el año seleccionado -->
+                <div *ngIf="!cargando && archivos.length === 0 && anioSeleccionado" class="estado-vacio-card">
+                    <div class="estado-vacio-icono">
+                        <span nz-icon nzType="inbox" nzTheme="outline"></span>
+                    </div>
+                    <h4>No hay documentos en este año</h4>
+                    <p>No se encontraron archivos registrados en la carpeta {{ anioSeleccionado }}.</p>
                 </div>
 
-                <div *ngIf="!cargando && aniosDisponibles.length === 0" class="estado-vacio">
-                    <nz-empty nzNotFoundContent="Este cliente no tiene archivos cargados"></nz-empty>
+                <!-- Estado vacío general (sin años) -->
+                <div *ngIf="!cargando && aniosDisponibles.length === 0" class="estado-vacio-card">
+                    <div class="estado-vacio-icono">
+                        <span nz-icon nzType="folder" nzTheme="outline"></span>
+                    </div>
+                    <h4>Sin carpetas de archivos</h4>
+                    <p>Este cliente aún no tiene archivos cargados en el sistema.</p>
                 </div>
 
                 <!-- Lista de archivos -->
-                <div *ngIf="archivos.length > 0" class="lista-archivos-ver">
-                    <!-- Cabecera con seleccionar todos -->
-                    <div class="lista-cabecera">
-                        <label nz-checkbox [(ngModel)]="todosSeleccionados" [nzIndeterminate]="indeterminate"
-                            (ngModelChange)="seleccionarTodos($event)">
-                            Seleccionar todos
-                        </label>
-                        <span class="contador-archivos">{{ archivos.length }} archivo(s)</span>
+                <div *ngIf="archivos.length > 0" class="seccion-lista-archivos">
+                    <!-- Cabecera de la tabla / lista -->
+                    <div class="lista-cabecera-custom">
+                        <div class="cabecera-seleccion">
+                            <label nz-checkbox [(ngModel)]="todosSeleccionados" [nzIndeterminate]="indeterminate"
+                                (ngModelChange)="seleccionarTodos($event)">
+                                <span class="cabecera-select-label">Seleccionar todos</span>
+                            </label>
+                        </div>
+                        <span class="cabecera-meta-info" *ngIf="cantidadSeleccionados > 0">
+                            {{ cantidadSeleccionados }} seleccionado{{ cantidadSeleccionados > 1 ? 's' : '' }}
+                        </span>
                     </div>
 
                     <!-- Items de archivo -->
-                    <div *ngFor="let archivo of archivos" class="archivo-item-ver">
-                        <div class="archivo-izquierda">
-                            <label nz-checkbox [(ngModel)]="archivo.checked"
-                                (ngModelChange)="actualizarEstadoSeleccion()"></label>
-                            <span nz-icon nzType="file" nzTheme="outline" class="archivo-icono"></span>
-                            <div class="archivo-info">
-                                <span class="archivo-nombre" nz-tooltip [nzTooltipTitle]="archivo.file_name">
-                                    {{ archivo.file_name }}
-                                </span>
-                                <span class="archivo-meta">
-                                    {{ formatearTamanio(archivo.file_size) }} · {{ archivo.file_extension | uppercase }}
-                                </span>
+                    <div class="lista-archivos-items">
+                        <div *ngFor="let archivo of archivos" class="archivo-fila" [class.archivo-fila-seleccionada]="archivo.checked">
+                            <div class="archivo-fila-izquierda">
+                                <label nz-checkbox [(ngModel)]="archivo.checked"
+                                    (ngModelChange)="actualizarEstadoSeleccion()"></label>
+                                
+                                <div class="archivo-tipo-tag" [ngClass]="'tipo-' + (archivo.file_extension | lowercase)">
+                                    <span nz-icon nzType="file-text" nzTheme="outline"></span>
+                                    <span>{{ archivo.file_extension | uppercase }}</span>
+                                </div>
+
+                                <div class="archivo-info-textos">
+                                    <span class="archivo-nombre" nz-tooltip [nzTooltipTitle]="archivo.file_name">
+                                        {{ archivo.file_name }}
+                                    </span>
+                                    <div class="archivo-subinfo">
+                                        <span class="archivo-tam">{{ formatearTamanio(archivo.file_size) }}</span>
+                                        <span class="archivo-separador" *ngIf="archivo.created_at">·</span>
+                                        <span class="archivo-fecha" *ngIf="archivo.created_at">{{ archivo.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="archivo-derecha">
-                            <button nz-button nzType="text" nzSize="small" nz-tooltip nzTooltipTitle="Descargar"
-                                (click)="descargarIndividual(archivo)">
-                                <span nz-icon nzType="download" nzTheme="outline"></span>
-                            </button>
-                            <button nz-button nzType="text" nzDanger nzSize="small"
-                                nz-popconfirm nzPopconfirmTitle="¿Eliminar este archivo?"
-                                nzCancelText="Cancelar" (nzOnConfirm)="eliminarArchivo(archivo)">
-                                <span nz-icon nzType="delete" nzTheme="outline"></span>
-                            </button>
+
+                            <div class="archivo-fila-acciones">
+                                <button nz-button nzType="text" nzSize="default" nz-tooltip nzTooltipTitle="Descargar archivo"
+                                    (click)="descargarIndividual(archivo)" class="btn-descarga-single">
+                                    <span nz-icon nzType="download" nzTheme="outline"></span>
+                                </button>
+                                <button nz-button nzType="text" nzDanger nzSize="default"
+                                    nz-popconfirm nzPopconfirmTitle="¿Eliminar este archivo permanentemente?"
+                                    nzOkText="Eliminar" nzOkDanger nzCancelText="Cancelar"
+                                    (nzOnConfirm)="eliminarArchivo(archivo)" class="btn-eliminar-single">
+                                    <span nz-icon nzType="delete" nzTheme="outline"></span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -73,11 +114,13 @@
     </ng-template>
 
     <ng-template #botonesModal>
-        <button nz-button nzType="primary" (click)="descargarSeleccionados()"
-            [disabled]="cantidadSeleccionados === 0 || descargando">
-            <span nz-icon nzType="download" nzTheme="outline"></span>
-            Descargar seleccionados ({{ cantidadSeleccionados }})
-        </button>
-        <button nz-button (click)="cerrarModalVer()">Cerrar</button>
+        <div class="modal-footer-custom">
+            <button nz-button (click)="cerrarModalVer()" class="btn-cerrar">Cerrar</button>
+            <button nz-button nzType="primary" (click)="descargarSeleccionados()"
+                [disabled]="cantidadSeleccionados === 0 || descargando" class="btn-descargar-multi">
+                <span nz-icon nzType="download" nzTheme="outline"></span>
+                <span>Descargar seleccionados {{ cantidadSeleccionados > 0 ? '(' + cantidadSeleccionados + ')' : '' }}</span>
+            </button>
+        </div>
     </ng-template>
 </nz-modal>

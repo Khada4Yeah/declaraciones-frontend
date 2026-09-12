@@ -1,62 +1,218 @@
 <!-- detalle-usuario.component.html -->
-<nz-modal [nzTitle]="tituloModal" [nzContent]="detallePersona" [nzFooter]="botonesModal" nzKeyboard="false"
-    nzClosable="false" [(nzVisible)]="modalVisible">
-    <ng-template #tituloModal><b>Detalle Cliente</b></ng-template>
-    <ng-template #detallePersona>
-        <div *ngIf="cargando" style="text-align: center; padding: 30px;">
-            <nz-spin nzSimple nzTip="Cargando detalles..."></nz-spin>
-        </div>
+<nz-modal
+  [nzTitle]="tituloModal"
+  [nzContent]="detallePersona"
+  [nzFooter]="botonesModal"
+  [nzVisible]="modalVisible"
+  nzWidth="680px"
+  [nzClosable]="true"
+  [nzKeyboard]="true"
+  (nzOnCancel)="cerrarModalUsuario()"
+  nzCentered>
 
-        <div *ngIf="!cargando && !errorCarga">
-            <ng-container *ngIf="personaNatural; else juridicaTemplate">
-                <p><b>Usuario: </b> {{ personaNatural.usuario.correo_electronico }}</p>
-                <p><b>Clave de Acceso:</b> {{ personaNatural.clave_acceso }}</p>
-                <p><b>Cédula/RUC: </b>{{ personaNatural.identificacion }}</p>
-                <p>
-                    <b>Nombres: </b>
-                    {{ personaNatural.nombres + ' ' + personaNatural.apellido_p + ' ' + personaNatural.apellido_m}}
-                </p>
-                <p><b>Celular: </b>{{ personaNatural.usuario.celular }}</p>
-                <p><b>Información Adicional:</b></p>
-                <textarea nz-input readOnly>{{ personaNatural.informacion_adicional }}</textarea>
-            </ng-container>
-            <ng-template #juridicaTemplate>
-                <ng-container *ngIf="personaJuridica">
-                    <p><b>Usuario: </b> {{ personaJuridica.usuario.correo_electronico }}</p>
-                    <p><b>Clave de Acceso:</b> {{ personaJuridica.clave_acceso }}</p>
-                    <p><b>RUC: </b>{{ personaJuridica.ruc }}</p>
-                    <p><b>Razón Social: </b>{{ personaJuridica.razon_social }}</p>
-                    <p><b>Celular: </b>{{ personaJuridica.usuario.celular }}</p>
-                    <p><b>Información Adicional:</b></p>
-                    <textarea nz-input readOnly>{{ personaJuridica.informacion_adicional }}</textarea>
-                </ng-container>
-            </ng-template>
+  <!-- Encabezado del Modal -->
+  <ng-template #tituloModal>
+    <div class="modal-header-custom" *ngIf="!cargando && !errorCarga && (personaNatural || personaJuridica)">
+      <div class="cliente-avatar" [ngClass]="esPersonaNatural ? 'avatar-natural' : 'avatar-juridica'">
+        <span nz-icon [nzType]="esPersonaNatural ? 'user' : 'bank'" nzTheme="outline"></span>
+      </div>
+      <div class="cliente-header-info">
+        <div class="cliente-nombre-row">
+          <h3 class="cliente-nombre">{{ nombreCliente }}</h3>
+          <nz-tag [nzColor]="esPersonaNatural ? 'blue' : 'purple'">
+            <span nz-icon [nzType]="esPersonaNatural ? 'user' : 'bank'"></span>
+            {{ tipoPersonaLabel }}
+          </nz-tag>
         </div>
+        <div class="cliente-subtitulo">
+          <span>{{ etiquetaIdentificacion }}: <strong>{{ identificacionCliente }}</strong></span>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="cargando" class="modal-header-loading">
+      <span>Detalle del Cliente</span>
+    </div>
+    <div *ngIf="!cargando && errorCarga" class="modal-header-loading">
+      <span>Error de carga</span>
+    </div>
+  </ng-template>
 
-        <div *ngIf="errorCarga">
-            <p>No se ha podido cargar los datos del cliente</p>
+  <!-- Contenido del Modal -->
+  <ng-template #detallePersona>
+    <!-- Estado: Cargando -->
+    <div *ngIf="cargando" class="estado-cargando">
+      <div class="spinner-wrapper">
+        <nz-spin nzSimple nzSize="large"></nz-spin>
+      </div>
+      <p class="estado-cargando-texto">Cargando detalles del cliente...</p>
+    </div>
+
+    <!-- Estado: Error -->
+    <div *ngIf="!cargando && errorCarga" class="estado-error">
+      <span nz-icon nzType="close-circle" nzTheme="outline" class="estado-error-icon"></span>
+      <p class="estado-error-titulo">No se pudieron cargar los datos</p>
+      <p class="estado-error-desc">Hubo un problema al consultar la información en el servidor.</p>
+    </div>
+
+    <!-- Estado: Datos Cargados -->
+    <div *ngIf="!cargando && !errorCarga && (personaNatural || personaJuridica)" class="detalle-cuerpo">
+      
+      <!-- Bloque 1: Identificación y Contacto -->
+      <div class="seccion-tarjeta">
+        <div class="seccion-cabecera">
+          <span nz-icon nzType="idcard" nzTheme="outline" class="seccion-icono"></span>
+          <span class="seccion-titulo">Datos de Contacto</span>
         </div>
-    </ng-template>
-    <ng-template #botonesModal>
-        <button nz-button nzType="default" (click)="abrirModalSubirArchivos()">
-            <span nz-icon nzType="upload" nzTheme="outline"></span> Subir Archivos
+        <div class="campos-grid">
+          <div class="campo-item">
+            <span class="campo-etiqueta">{{ etiquetaIdentificacion }}</span>
+            <div class="campo-valor-row">
+              <span class="campo-valor text-mono font-semibold">{{ identificacionCliente || '—' }}</span>
+              <button *ngIf="identificacionCliente" nz-button nzType="text" nzSize="small" class="btn-copiar"
+                (click)="copiarTexto(identificacionCliente, 'identificacion')"
+                [nzTooltipTitle]="copiadoCampo === 'identificacion' ? '¡Copiado!' : 'Copiar'"
+                nz-tooltip>
+                <span nz-icon [nzType]="copiadoCampo === 'identificacion' ? 'check' : 'copy'"
+                  [class.text-success]="copiadoCampo === 'identificacion'"></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="campo-item">
+            <span class="campo-etiqueta">Teléfono / Celular</span>
+            <div class="campo-valor-row">
+              <span class="campo-valor">
+                <a *ngIf="celularCliente" [href]="'tel:' + celularCliente" class="link-telefono">
+                  <span nz-icon nzType="phone" nzTheme="outline"></span>
+                  {{ celularCliente }}
+                </a>
+                <span *ngIf="!celularCliente" class="text-muted">No registrado</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloque 2: Credenciales de Acceso -->
+      <div class="seccion-tarjeta seccion-credenciales">
+        <div class="seccion-cabecera">
+          <span nz-icon nzType="lock" nzTheme="outline" class="seccion-icono credencial-icono"></span>
+          <span class="seccion-titulo">Credenciales del Portal</span>
+        </div>
+        <div class="campos-grid">
+          <div class="campo-item">
+            <span class="campo-etiqueta">Correo Electrónico (Usuario)</span>
+            <div class="campo-valor-row">
+              <span class="campo-valor email-valor" [title]="correoCliente">
+                <span nz-icon nzType="mail" nzTheme="outline"></span>
+                <span class="texto-truncado">{{ correoCliente || '—' }}</span>
+              </span>
+              <button *ngIf="correoCliente" nz-button nzType="text" nzSize="small" class="btn-copiar"
+                (click)="copiarTexto(correoCliente, 'correo')"
+                [nzTooltipTitle]="copiadoCampo === 'correo' ? '¡Copiado!' : 'Copiar correo'"
+                nz-tooltip>
+                <span nz-icon [nzType]="copiadoCampo === 'correo' ? 'check' : 'copy'"
+                  [class.text-success]="copiadoCampo === 'correo'"></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="campo-item">
+            <span class="campo-etiqueta">Clave de Acceso</span>
+            <div class="campo-valor-row clave-row">
+              <div class="clave-display">
+                <span *ngIf="mostrarClave" class="text-mono clave-texto">{{ claveAcceso || '—' }}</span>
+                <span *ngIf="!mostrarClave" class="clave-mascarada">••••••••</span>
+              </div>
+              <div class="clave-botones">
+                <button *ngIf="claveAcceso" nz-button nzType="text" nzSize="small" class="btn-clave-accion"
+                  (click)="toggleMostrarClave()"
+                  [nzTooltipTitle]="mostrarClave ? 'Ocultar clave' : 'Mostrar clave'"
+                  nz-tooltip>
+                  <span nz-icon [nzType]="mostrarClave ? 'eye-invisible' : 'eye'" nzTheme="outline"></span>
+                </button>
+                <button *ngIf="claveAcceso" nz-button nzType="text" nzSize="small" class="btn-copiar"
+                  (click)="copiarTexto(claveAcceso, 'clave')"
+                  [nzTooltipTitle]="copiadoCampo === 'clave' ? '¡Copiada!' : 'Copiar clave'"
+                  nz-tooltip>
+                  <span nz-icon [nzType]="copiadoCampo === 'clave' ? 'check' : 'copy'"
+                    [class.text-success]="copiadoCampo === 'clave'"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloque 3: Observaciones / Notas -->
+      <div class="seccion-tarjeta">
+        <div class="seccion-cabecera">
+          <span nz-icon nzType="file-text" nzTheme="outline" class="seccion-icono"></span>
+          <span class="seccion-titulo">Observaciones</span>
+        </div>
+        <div *ngIf="infoAdicional && infoAdicional.trim().length > 0; else sinInfo" class="observaciones-caja">
+          <p class="observaciones-texto">{{ infoAdicional }}</p>
+        </div>
+        <ng-template #sinInfo>
+          <div class="observaciones-vacia">
+            <span class="text-muted">Sin observaciones registradas</span>
+          </div>
+        </ng-template>
+      </div>
+
+    </div>
+  </ng-template>
+
+  <!-- Footer con botones organizados -->
+  <ng-template #botonesModal>
+    <!-- Durante carga o error, solo mostrar Cerrar -->
+    <div *ngIf="cargando || errorCarga" class="modal-footer-simple">
+      <button nz-button (click)="cerrarModalUsuario()">Cerrar</button>
+    </div>
+
+    <!-- Cuando la info está cargada, mostrar botones con iconos y jerarquía -->
+    <div *ngIf="!cargando && !errorCarga" class="modal-footer">
+      <!-- Grupo Izquierdo: Gestión de Archivos -->
+      <div class="modal-footer-archivos">
+        <button nz-button nzType="default" (click)="abrirModalSubirArchivos()" class="btn-archivo">
+          <span nz-icon nzType="upload" nzTheme="outline"></span>
+          <span>Subir Archivos</span>
         </button>
-        <button nz-button nzType="default" (click)="abrirModalVerArchivos()">
-            <span nz-icon nzType="folder" nzTheme="outline"></span> Ver Archivos
+        <button nz-button nzType="default" (click)="abrirModalVerArchivos()" class="btn-archivo">
+          <span nz-icon nzType="folder-open" nzTheme="outline"></span>
+          <span>Ver Archivos</span>
         </button>
-        <button nz-button nzType="primary" (click)="editarUsuario()">Editar</button>
-        <button nz-button nzType="primary" nzDanger nzOkDanger nz-popconfirm nzPopconfirmTitle="¿Está seguro?"
-            nzCancelText="Cancelar" (nzOnConfirm)="eliminarUsuario()">Eliminar</button>
-        <button nz-button (click)="cerrarModalUsuario()">Cerrar</button>
-    </ng-template>
+      </div>
+
+      <!-- Grupo Derecho: Acciones de Gestión y Cierre -->
+      <div class="modal-footer-acciones">
+        <button nz-button nzType="primary" (click)="editarUsuario()" class="btn-accion">
+          <span nz-icon nzType="edit" nzTheme="outline"></span>
+          <span>Editar</span>
+        </button>
+        <button nz-button nzDanger nz-popconfirm
+          nzPopconfirmTitle="¿Está seguro de eliminar este cliente?"
+          nzOkText="Eliminar"
+          nzCancelText="Cancelar"
+          (nzOnConfirm)="eliminarUsuario()"
+          class="btn-accion">
+          <span nz-icon nzType="delete" nzTheme="outline"></span>
+          <span>Eliminar</span>
+        </button>
+        <button nz-button (click)="cerrarModalUsuario()" class="btn-accion">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </ng-template>
 </nz-modal>
 
 <!-- Modal para subir archivos -->
 <app-modal-subir-archivos [modalVisible]="modalSubirVisible" [idUsuario]="obtenerIdUsuario()"
-    (cerrarModal)="modalSubirVisible = false" (archivosSubidos)="onArchivosSubidos()">
+  (cerrarModal)="modalSubirVisible = false" (archivosSubidos)="onArchivosSubidos()">
 </app-modal-subir-archivos>
 
 <!-- Modal para ver archivos -->
 <app-modal-ver-archivos [modalVisible]="modalVerVisible" [idUsuario]="obtenerIdUsuario()"
-    (cerrarModal)="modalVerVisible = false">
+  (cerrarModal)="modalVerVisible = false">
 </app-modal-ver-archivos>

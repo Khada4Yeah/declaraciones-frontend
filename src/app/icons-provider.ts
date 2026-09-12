@@ -17,6 +17,16 @@ import {
   FileOutline,
   InboxOutline,
   PlusOutline,
+  EditOutline,
+  EyeOutline,
+  CopyOutline,
+  MailOutline,
+  PhoneOutline,
+  IdcardOutline,
+  KeyOutline,
+  BankOutline,
+  CheckOutline,
+  FolderOpenOutline,
 } from '@ant-design/icons-angular/icons';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
@@ -38,6 +48,16 @@ const icons = [
   FileOutline,
   InboxOutline,
   PlusOutline,
+  EditOutline,
+  EyeOutline,
+  CopyOutline,
+  MailOutline,
+  PhoneOutline,
+  IdcardOutline,
+  KeyOutline,
+  BankOutline,
+  CheckOutline,
+  FolderOpenOutline,
 ];
 
 export function provideNzIcons(): EnvironmentProviders {

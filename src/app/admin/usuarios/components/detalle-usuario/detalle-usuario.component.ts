@@ -29,12 +29,19 @@ export class DetalleUsuarioComponent {
   cargando: boolean = false;
   errorCarga: boolean = false;
 
+  /** Control de visibilidad de la clave de acceso */
+  mostrarClave: boolean = false;
+  /** Campo copiado recientemente para feedback temporal */
+  copiadoCampo: string | null = null;
+
   /** Control de visibilidad del modal de subida de archivos */
   modalSubirVisible: boolean = false;
   /** Control de visibilidad del modal de visualización de archivos */
   modalVerVisible: boolean = false;
 
   @Input() set personaNaturalInput(val: PersonaNatural | null) {
+    this.mostrarClave = false;
+    this.copiadoCampo = null;
     if (val) {
       this.cargando = true;
       this.errorCarga = false;
@@ -55,6 +62,8 @@ export class DetalleUsuarioComponent {
   }
 
   @Input() set personaJuridicaInput(val: PersonaJuridica | null) {
+    this.mostrarClave = false;
+    this.copiadoCampo = null;
     if (val) {
       this.cargando = true;
       this.errorCarga = false;
@@ -81,6 +90,124 @@ export class DetalleUsuarioComponent {
   private personaNaturalService = inject(PersonaNaturalService);
   private personaJuridicaService = inject(PersonaJuridicaService);
   private modalService = inject(ModalService);
+
+  get esPersonaNatural(): boolean {
+    return !!this.personaNatural;
+  }
+
+  get nombreCliente(): string {
+    if (this.personaNatural) {
+      const parts = [
+        this.personaNatural.nombres,
+        this.personaNatural.apellido_p,
+        this.personaNatural.apellido_m,
+      ].filter(Boolean);
+      return parts.join(' ');
+    }
+    if (this.personaJuridica) {
+      return this.personaJuridica.razon_social || '';
+    }
+    return '';
+  }
+
+  get identificacionCliente(): string {
+    return this.personaNatural?.identificacion || this.personaJuridica?.ruc || '';
+  }
+
+  get correoCliente(): string {
+    return (
+      this.personaNatural?.usuario?.correo_electronico ||
+      this.personaJuridica?.usuario?.correo_electronico ||
+      ''
+    );
+  }
+
+  get celularCliente(): string {
+    return (
+      this.personaNatural?.usuario?.celular ||
+      this.personaJuridica?.usuario?.celular ||
+      ''
+    );
+  }
+
+  get claveAcceso(): string {
+    return (
+      this.personaNatural?.clave_acceso ||
+      this.personaJuridica?.clave_acceso ||
+      ''
+    );
+  }
+
+  get infoAdicional(): string {
+    return (
+      this.personaNatural?.informacion_adicional ||
+      this.personaJuridica?.informacion_adicional ||
+      ''
+    );
+  }
+
+  get tipoPersonaLabel(): string {
+    if (this.esPersonaNatural) {
+      return this.identificacionCliente.length === 13 &&
+        this.identificacionCliente.endsWith('001')
+        ? 'Persona Natural (RUC)'
+        : 'Persona Natural (Cédula)';
+    }
+    return 'Persona Jurídica';
+  }
+
+  get etiquetaIdentificacion(): string {
+    if (this.esPersonaNatural) {
+      return this.identificacionCliente.length === 13
+        ? 'RUC (Persona Natural)'
+        : 'Cédula de Identidad';
+    }
+    return 'RUC (Sociedad / Empresa)';
+  }
+
+  toggleMostrarClave(): void {
+    this.mostrarClave = !this.mostrarClave;
+  }
+
+  copiarTexto(texto: string, campo: string): void {
+    if (!texto) return;
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(texto).then(() => {
+        this.copiadoCampo = campo;
+        setTimeout(() => {
+          if (this.copiadoCampo === campo) {
+            this.copiadoCampo = null;
+          }
+        }, 2000);
+      }).catch(() => {
+        this.fallbackCopiar(texto, campo);
+      });
+    } else {
+      this.fallbackCopiar(texto, campo);
+    }
+  }
+
+  private fallbackCopiar(texto: string, campo: string): void {
+    const el = document.createElement('textarea');
+    el.value = texto;
+    el.style.position = 'fixed';
+    el.style.opacity = '0';
+    document.body.appendChild(el);
+    el.select();
+    try {
+      document.execCommand('copy');
+      this.copiadoCampo = campo;
+      setTimeout(() => {
+        if (this.copiadoCampo === campo) {
+          this.copiadoCampo = null;
+        }
+      }, 2000);
+    } catch {
+      // Ignorar error
+    } finally {
+      document.body.removeChild(el);
+    }
+  }
 
   /**
    * Cierra el modal de detalle emitiendo el evento correspondiente.

@@ -26,6 +26,7 @@ import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzTagModule } from 'ng-zorro-antd/tag';
 
 import { ModalSubirArchivosComponent } from './components/modal-subir-archivos/modal-subir-archivos.component';
 import { ModalVerArchivosComponent } from './components/modal-ver-archivos/modal-ver-archivos.component';
@@ -60,7 +61,8 @@ import { ModalVerArchivosComponent } from './components/modal-ver-archivos/modal
     NzUploadModule,
     NzListModule,
     NzCheckboxModule,
-    NzToolTipModule
+    NzToolTipModule,
+    NzTagModule
   ],
 })
 export class UsuariosModule { }

@@ -27,6 +27,10 @@ import {
   BankOutline,
   CheckOutline,
   FolderOpenOutline,
+  SearchOutline,
+  TeamOutline,
+  CalendarOutline,
+  FilterOutline,
 } from '@ant-design/icons-angular/icons';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
@@ -58,6 +62,10 @@ const icons = [
   BankOutline,
   CheckOutline,
   FolderOpenOutline,
+  SearchOutline,
+  TeamOutline,
+  CalendarOutline,
+  FilterOutline,
 ];
 
 export function provideNzIcons(): EnvironmentProviders {

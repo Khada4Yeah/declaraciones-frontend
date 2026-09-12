@@ -1,38 +1,269 @@
-<nz-spin [nzSpinning]="!paginaCargada" [nzTip]="'Cargando lista de usuarios...'">
-</nz-spin>
+<!-- tarjetas-usuarios.component.html -->
 
-<div class="cards--grid" *ngIf="paginaCargada && (personasNaturales.length > 0 || personasJuridicas.length > 0) ">
-    <div *ngFor="let personaN of personasNaturales; trackBy: trackById" class="card">
-        <p class="badge-container">
-            <nz-badge nzStandalone [nzCount]="asignarDiaDeclaracion(personaN.identificacion)"
-                [nzStyle]="{ backgroundColor: asignarColor(personaN.identificacion) }"></nz-badge>
-            <span style="font-weight: 900;">{{personaN.identificacion}}</span>
-            <button nz-button nzType="primary" nzShape="circle" class="eye-button" nzSize="small"
-                (click)="mostrarDetalle(personaN, null)">
-                <span nz-icon nzType="eye"></span>
-            </button>
-        </p>
-        <p style="margin-bottom: 0;">{{personaN.nombres}} {{personaN.apellido_p}} {{personaN.apellido_m}}</p>
-    </div>
-
-    <div *ngFor="let personaJ of personasJuridicas; trackBy: trackById" class="card">
-        <p class="badge-container">
-            <nz-badge nzStandalone [nzCount]="asignarDiaDeclaracion(personaJ.ruc)"
-                [nzStyle]="{ backgroundColor: asignarColor(personaJ.ruc) }"></nz-badge>
-            <span style="font-weight: 900;">{{personaJ.ruc}}</span>
-            <button nz-button nzType="primary" nzShape="circle" class="eye-button" nzSize="small"
-                (click)="mostrarDetalle(null, personaJ)">
-                <span nz-icon nzType="eye"></span>
-            </button>
-        </p>
-        <p style="margin-bottom: 0;">{{personaJ.razon_social}}</p>
-    </div>
+<!-- Estado de Carga General -->
+<div *ngIf="!paginaCargada" class="loading-state-global">
+  <div class="spinner-box">
+    <nz-spin nzSimple nzSize="large"></nz-spin>
+  </div>
+  <p class="loading-text">Cargando directorio de clientes...</p>
 </div>
 
-<div class="contenedor" *ngIf="paginaCargada && (personasNaturales.length === 0 && personasJuridicas.length === 0)">
-    <nz-empty nzNotFoundContent="No existen registros"></nz-empty>
+<div *ngIf="paginaCargada" class="directorio-container">
+
+  <!-- ========================================== -->
+  <!-- 1. TARJETAS DE MÉTRICAS Y RESUMEN (KPIs)   -->
+  <!-- ========================================== -->
+  <div class="kpi-grid">
+    <!-- Total Clientes -->
+    <div class="kpi-card" [class.kpi-active]="filtroTipo === 'todos'" (click)="setFiltroTipo('todos')">
+      <div class="kpi-icon-wrapper kpi-icon-total">
+        <span nz-icon nzType="team" nzTheme="outline"></span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-valor">{{ totalClientes }}</span>
+        <span class="kpi-etiqueta">Total Clientes</span>
+      </div>
+    </div>
+
+    <!-- Personas Naturales -->
+    <div class="kpi-card" [class.kpi-active]="filtroTipo === 'natural'" (click)="setFiltroTipo('natural')">
+      <div class="kpi-icon-wrapper kpi-icon-natural">
+        <span nz-icon nzType="user" nzTheme="outline"></span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-valor">{{ totalNaturales }}</span>
+        <span class="kpi-etiqueta">Personas Naturales</span>
+      </div>
+    </div>
+
+    <!-- Personas Jurídicas -->
+    <div class="kpi-card" [class.kpi-active]="filtroTipo === 'juridica'" (click)="setFiltroTipo('juridica')">
+      <div class="kpi-icon-wrapper kpi-icon-juridica">
+        <span nz-icon nzType="bank" nzTheme="outline"></span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-valor">{{ totalJuridicas }}</span>
+        <span class="kpi-etiqueta">Personas Jurídicas</span>
+      </div>
+    </div>
+
+    <!-- Próximos a Declarar -->
+    <div class="kpi-card kpi-card-urgente" [class.kpi-active]="filtroTipo === 'proximos'" (click)="setFiltroTipo('proximos')">
+      <div class="kpi-icon-wrapper kpi-icon-urgente">
+        <span nz-icon nzType="calendar" nzTheme="outline"></span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-valor">{{ totalProximos }}</span>
+        <span class="kpi-etiqueta">Por Declarar Pronto</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 2. BARRA DE HERRAMIENTAS: BÚSQUEDA Y FILTROS -->
+  <!-- ========================================== -->
+  <div class="toolbar-card">
+    <div class="toolbar-left">
+      <!-- Input de Búsqueda en Tiempo Real -->
+      <nz-input-group [nzPrefix]="iconoBusqueda" [nzSuffix]="suffixClear" class="search-input-group">
+        <input
+          type="text"
+          nz-input
+          placeholder="Buscar por nombre, cédula, RUC, correo o celular..."
+          [(ngModel)]="terminoBusqueda"
+          (ngModelChange)="onBusquedaChange()" />
+      </nz-input-group>
+      <ng-template #iconoBusqueda>
+        <span nz-icon nzType="search" nzTheme="outline" class="search-icon"></span>
+      </ng-template>
+      <ng-template #suffixClear>
+        <span
+          *ngIf="terminoBusqueda"
+          nz-icon
+          nzType="close-circle"
+          nzTheme="fill"
+          class="clear-icon"
+          (click)="terminoBusqueda = ''; onBusquedaChange()"></span>
+      </ng-template>
+    </div>
+
+    <div class="toolbar-right">
+      <!-- Filtros por tipo (Píldoras) -->
+      <div class="filter-pills">
+        <button
+          nz-button
+          [nzType]="filtroTipo === 'todos' ? 'primary' : 'default'"
+          nzSize="small"
+          class="filter-btn"
+          (click)="setFiltroTipo('todos')">
+          Todos ({{ totalClientes }})
+        </button>
+        <button
+          nz-button
+          [nzType]="filtroTipo === 'natural' ? 'primary' : 'default'"
+          nzSize="small"
+          class="filter-btn"
+          (click)="setFiltroTipo('natural')">
+          Naturales ({{ totalNaturales }})
+        </button>
+        <button
+          nz-button
+          [nzType]="filtroTipo === 'juridica' ? 'primary' : 'default'"
+          nzSize="small"
+          class="filter-btn"
+          (click)="setFiltroTipo('juridica')">
+          Jurídicas ({{ totalJuridicas }})
+        </button>
+        <button
+          nz-button
+          [nzType]="filtroTipo === 'proximos' ? 'primary' : 'default'"
+          nzSize="small"
+          class="filter-btn btn-alerta"
+          (click)="setFiltroTipo('proximos')">
+          Próximos ({{ totalProximos }})
+        </button>
+      </div>
+
+      <!-- Selector de Ordenamiento -->
+      <div class="sort-selector">
+        <span class="sort-label">Ordenar:</span>
+        <nz-select [(ngModel)]="ordenamiento" nzSize="small" class="select-orden">
+          <nz-option nzValue="nombre-asc" nzLabel="Nombre (A - Z)"></nz-option>
+          <nz-option nzValue="nombre-desc" nzLabel="Nombre (Z - A)"></nz-option>
+          <nz-option nzValue="dia-asc" nzLabel="Día Declaración"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contador de Resultados -->
+  <div class="results-header" *ngIf="clientesFiltrados.length > 0">
+    <span class="results-count">
+      Mostrando <strong>{{ clientesPaginados.length }}</strong> de <strong>{{ clientesFiltrados.length }}</strong> clientes
+      <span *ngIf="terminoBusqueda || filtroTipo !== 'todos'"> (filtrados de {{ totalClientes }})</span>
+    </span>
+    <button *ngIf="terminoBusqueda || filtroTipo !== 'todos'" nz-button nzType="link" nzSize="small" (click)="limpiarFiltros()" class="btn-limpiar-link">
+      Limpiar filtros
+    </button>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 3. GRID DE TARJETAS DE CLIENTE             -->
+  <!-- ========================================== -->
+  <div class="cards-grid" *ngIf="clientesPaginados.length > 0">
+    <div
+      *ngFor="let cliente of clientesPaginados; trackBy: trackById"
+      class="cliente-card"
+      [class.card-hoy]="cliente.estadoDeclaracion === 'hoy'"
+      [class.card-proximo]="cliente.estadoDeclaracion === 'proximo'"
+      (click)="abrirModalCliente(cliente)">
+
+      <!-- Borde Superior de Acento según Estado -->
+      <div class="card-accent" [style.background-color]="cliente.estadoColor"></div>
+
+      <!-- Cabecera de la Tarjeta -->
+      <div class="card-top">
+        <div class="avatar-badge-group">
+          <!-- Avatar con Iniciales -->
+          <div class="cliente-avatar" [ngClass]="cliente.tipo === 'natural' ? 'avatar-natural' : 'avatar-juridica'">
+            <span nz-icon [nzType]="cliente.tipo === 'natural' ? 'user' : 'bank'" class="avatar-icon"></span>
+          </div>
+
+          <div class="id-type-col">
+            <span class="cliente-id text-mono font-semibold">{{ cliente.identificacion }}</span>
+            <span class="cliente-type-tag" [ngClass]="cliente.tipo === 'natural' ? 'type-natural' : 'type-juridica'">
+              {{ cliente.tipoEtiqueta }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Pill de Declaración Mensual -->
+        <div
+          class="declaracion-pill"
+          [style.background-color]="cliente.estadoColor + '18'"
+          [style.color]="cliente.estadoColor"
+          [style.border-color]="cliente.estadoColor + '40'"
+          [nzTooltipTitle]="'Día máximo de declaración mensual según 9no dígito del RUC'"
+          nz-tooltip>
+          <span nz-icon nzType="calendar" nzTheme="outline" class="calendar-icon"></span>
+          <span class="pill-text">{{ cliente.estadoTexto }}</span>
+        </div>
+      </div>
+
+      <!-- Nombre del Cliente -->
+      <h3 class="cliente-card-nombre" [title]="cliente.nombre">
+        {{ cliente.nombre }}
+      </h3>
+
+      <!-- Datos de Contacto Rápidos -->
+      <div class="card-contacto">
+        <div class="contacto-item" *ngIf="cliente.correo" [title]="cliente.correo">
+          <span nz-icon nzType="mail" nzTheme="outline"></span>
+          <span class="contacto-texto">{{ cliente.correo }}</span>
+        </div>
+        <div class="contacto-item" *ngIf="cliente.celular">
+          <span nz-icon nzType="phone" nzTheme="outline"></span>
+          <span class="contacto-texto">{{ cliente.celular }}</span>
+        </div>
+      </div>
+
+      <!-- Pie de la Tarjeta con Botón de Acción -->
+      <div class="card-footer">
+        <span class="card-click-hint">Click para ver más</span>
+        <button
+          nz-button
+          nzType="default"
+          nzSize="small"
+          class="btn-ver-detalle"
+          (click)="$event.stopPropagation(); abrirModalCliente(cliente)">
+          <span nz-icon nzType="eye" nzTheme="outline"></span>
+          <span>Ver Detalle</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 4. ESTADO VACÍO (SIN RESULTADOS)           -->
+  <!-- ========================================== -->
+  <div class="empty-state-card" *ngIf="clientesFiltrados.length === 0">
+    <nz-empty
+      [nzNotFoundContent]="contentEmpty"
+      [nzNotFoundFooter]="footerEmpty">
+      <ng-template #contentEmpty>
+        <p class="empty-title">No se encontraron clientes</p>
+        <p class="empty-desc">No hay clientes que coincidan con el término "{{ terminoBusqueda }}" o con los filtros seleccionados.</p>
+      </ng-template>
+      <ng-template #footerEmpty>
+        <button nz-button nzType="primary" (click)="limpiarFiltros()">
+          Restablecer Filtros
+        </button>
+      </ng-template>
+    </nz-empty>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 5. PAGINACIÓN                              -->
+  <!-- ========================================== -->
+  <div class="pagination-container" *ngIf="clientesFiltrados.length > tamanioPagina">
+    <nz-pagination
+      [nzPageIndex]="paginaActual"
+      [nzPageSize]="tamanioPagina"
+      [nzTotal]="clientesFiltrados.length"
+      [nzPageSizeOptions]="tamanioOpciones"
+      nzShowSizeChanger
+      (nzPageIndexChange)="paginaActual = $event"
+      (nzPageSizeChange)="tamanioPagina = $event; paginaActual = 1">
+    </nz-pagination>
+  </div>
+
 </div>
 
-<app-detalle-usuario [modalVisible]="mostrarModal" [personaNaturalInput]="selectedPersonaNatural"
-    [personaJuridicaInput]="selectedPersonaJuridica" (cerrarModal)="cerrarModal()">
+<!-- Modal de Detalle de Usuario -->
+<app-detalle-usuario
+  [modalVisible]="mostrarModal"
+  [personaNaturalInput]="selectedPersonaNatural"
+  [personaJuridicaInput]="selectedPersonaJuridica"
+  (cerrarModal)="cerrarModal()">
 </app-detalle-usuario>

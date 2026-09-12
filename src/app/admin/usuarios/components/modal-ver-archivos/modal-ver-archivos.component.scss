@@ -314,3 +314,47 @@
     gap: 6px;
   }
 }
+
+@media (max-width: 576px) {
+  .toolbar-archivos {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+
+    .toolbar-anio {
+      justify-content: space-between;
+
+      .select-anio-ver {
+        flex: 1;
+      }
+    }
+  }
+
+  .archivo-fila {
+    padding: 8px 10px;
+
+    .archivo-fila-izquierda {
+      gap: 8px;
+
+      .archivo-info-textos .archivo-nombre {
+        max-width: 140px;
+      }
+    }
+  }
+
+  .modal-footer-custom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    gap: 8px;
+
+    .btn-cerrar,
+    .btn-descargar-multi {
+      width: 100%;
+      justify-content: center;
+      font-size: 12px;
+      padding: 0 4px;
+    }
+  }
+}
+

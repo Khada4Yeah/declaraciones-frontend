@@ -8,3 +8,17 @@ body {
 .ant-modal-confirm-body .ant-modal-confirm-title {
     font-weight: bold;
 }
+
+// Adaptabilidad móvil de modales Ant Design
+@media (max-width: 768px) {
+    .ant-modal {
+        max-width: calc(100vw - 16px) !important;
+        margin: 8px auto !important;
+    }
+    .ant-modal-body {
+        padding: 16px 14px !important;
+    }
+    .ant-modal-footer {
+        padding: 10px 14px !important;
+    }
+}

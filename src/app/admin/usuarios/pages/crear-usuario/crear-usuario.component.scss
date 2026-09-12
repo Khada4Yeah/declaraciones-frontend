@@ -39,6 +39,10 @@
       color: #0f172a;
       letter-spacing: -0.02em;
       margin: 0 0 6px 0;
+
+      @media (max-width: 576px) {
+        font-size: 20px;
+      }
     }
 
     .subtitulo-principal {
@@ -46,6 +50,10 @@
       color: #64748b;
       margin: 0;
       line-height: 1.5;
+
+      @media (max-width: 576px) {
+        font-size: 13px;
+      }
     }
   }
 }
@@ -219,5 +227,9 @@
 
   @media (max-width: 640px) {
     padding: 18px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px 12px;
   }
 }

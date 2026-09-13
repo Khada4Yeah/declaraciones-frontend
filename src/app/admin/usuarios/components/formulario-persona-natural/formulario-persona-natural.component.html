@@ -1,7 +1,7 @@
 <!-- formulario-persona-natural.component.html -->
 <nz-spin [nzSpinning]="!paginaCargada" nzTip="Cargando formulario...">
   <form nz-form nzLayout="vertical" [formGroup]="formularioPersonaNatural" (ngSubmit)="guardarPersonaNatural()"
-    *ngIf="paginaCargada" class="form-cliente-moderno">
+    *ngIf="paginaCargada" class="form-cliente-moderno" autocomplete="off">
 
     <!-- Sección 1: Identificación y Datos Personales -->
     <div class="form-bloque-card">
@@ -22,7 +22,7 @@
           <nz-form-control [nzErrorTip]="cedulaRucErrorTpl">
             <nz-input-group [nzPrefix]="prefixId">
               <input nz-input formControlName="identificacion" id="identificacion"
-                placeholder="Ej. 1312345678 o 1312345678001" maxlength="13" />
+                placeholder="Ej. 1312345678 o 1312345678001" maxlength="13" autocomplete="off" />
             </nz-input-group>
             <ng-template #prefixId><span nz-icon nzType="idcard" class="input-icon"></span></ng-template>
             <ng-template #cedulaRucErrorTpl let-control>
@@ -37,7 +37,7 @@
           <nz-form-label nzRequired nzFor="celular">Teléfono Celular</nz-form-label>
           <nz-form-control [nzErrorTip]="telefonoErrorTpl">
             <nz-input-group [nzPrefix]="prefixTel">
-              <input nz-input formControlName="celular" id="celular" placeholder="Ej. 0991234567" maxlength="10" />
+              <input nz-input formControlName="celular" id="celular" placeholder="Ej. 0991234567" maxlength="10" autocomplete="off" />
             </nz-input-group>
             <ng-template #prefixTel><span nz-icon nzType="phone" class="input-icon"></span></ng-template>
             <ng-template #telefonoErrorTpl let-control>
@@ -54,7 +54,7 @@
           <nz-form-label nzRequired nzFor="nombres">Nombres</nz-form-label>
           <nz-form-control [nzErrorTip]="nombresErrorTpl">
             <nz-input-group [nzPrefix]="prefixUser">
-              <input nz-input formControlName="nombres" id="nombres" placeholder="Nombres completos" />
+              <input nz-input formControlName="nombres" id="nombres" placeholder="Nombres completos" autocomplete="off" />
             </nz-input-group>
             <ng-template #prefixUser><span nz-icon nzType="user" class="input-icon"></span></ng-template>
             <ng-template #nombresErrorTpl let-control>
@@ -67,7 +67,7 @@
         <nz-form-item class="form-item-custom">
           <nz-form-label nzFor="apellido_p">Apellido Paterno</nz-form-label>
           <nz-form-control>
-            <input nz-input formControlName="apellido_p" id="apellido_p" placeholder="Primer apellido" />
+            <input nz-input formControlName="apellido_p" id="apellido_p" placeholder="Primer apellido" autocomplete="off" />
           </nz-form-control>
         </nz-form-item>
 
@@ -75,7 +75,7 @@
         <nz-form-item class="form-item-custom">
           <nz-form-label nzFor="apellido_m">Apellido Materno</nz-form-label>
           <nz-form-control>
-            <input nz-input formControlName="apellido_m" id="apellido_m" placeholder="Segundo apellido" />
+            <input nz-input formControlName="apellido_m" id="apellido_m" placeholder="Segundo apellido" autocomplete="off" />
           </nz-form-control>
         </nz-form-item>
       </div>
@@ -100,7 +100,7 @@
           <nz-form-control [nzErrorTip]="usuarioErrorTpl">
             <nz-input-group [nzPrefix]="prefixMail">
               <input nz-input formControlName="correo_electronico" id="correo_electronico"
-                placeholder="cliente@ejemplo.com" type="email" />
+                placeholder="cliente@ejemplo.com" type="email" autocomplete="off" />
             </nz-input-group>
             <ng-template #prefixMail><span nz-icon nzType="mail" class="input-icon"></span></ng-template>
             <ng-template #usuarioErrorTpl let-control>
@@ -116,7 +116,7 @@
           <nz-form-control [nzErrorTip]="claveAccesoErrorTpl">
             <nz-input-group [nzPrefix]="prefixLock" [nzSuffix]="suffixLock">
               <input nz-input [type]="mostrarClave ? 'text' : 'password'" formControlName="clave_acceso"
-                id="clave_acceso" placeholder="Contraseña del portal" />
+                id="clave_acceso" placeholder="Contraseña del portal" autocomplete="new-password" />
             </nz-input-group>
             <ng-template #prefixLock><span nz-icon nzType="lock" class="input-icon"></span></ng-template>
             <ng-template #suffixLock>

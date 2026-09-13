@@ -1,7 +1,7 @@
 <!-- formulario-persona-juridica.component.html -->
 <nz-spin [nzSpinning]="!paginaCargada" nzTip="Cargando formulario...">
   <form nz-form nzLayout="vertical" [formGroup]="formularioPersonaJuridica" (ngSubmit)="guardarPersonaJuridica()"
-    *ngIf="paginaCargada" class="form-cliente-moderno">
+    *ngIf="paginaCargada" class="form-cliente-moderno" autocomplete="off">
 
     <!-- Sección 1: Datos de la Empresa -->
     <div class="form-bloque-card">
@@ -21,7 +21,7 @@
           <nz-form-label nzRequired nzFor="ruc">RUC de la Empresa</nz-form-label>
           <nz-form-control [nzErrorTip]="rucErrorTpl">
             <nz-input-group [nzPrefix]="prefixRuc">
-              <input nz-input formControlName="ruc" id="ruc" placeholder="Ej. 1791234567001" maxlength="13" />
+              <input nz-input formControlName="ruc" id="ruc" placeholder="Ej. 1791234567001" maxlength="13" autocomplete="off" />
             </nz-input-group>
             <ng-template #prefixRuc><span nz-icon nzType="idcard" class="input-icon"></span></ng-template>
             <ng-template #rucErrorTpl let-control>
@@ -36,7 +36,7 @@
           <nz-form-label nzRequired nzFor="celular_j">Teléfono / Celular de Contacto</nz-form-label>
           <nz-form-control [nzErrorTip]="celularErrorTpl">
             <nz-input-group [nzPrefix]="prefixTelJ">
-              <input nz-input formControlName="celular" id="celular_j" placeholder="Ej. 0991234567" maxlength="10" />
+              <input nz-input formControlName="celular" id="celular_j" placeholder="Ej. 0991234567" maxlength="10" autocomplete="off" />
             </nz-input-group>
             <ng-template #prefixTelJ><span nz-icon nzType="phone" class="input-icon"></span></ng-template>
             <ng-template #celularErrorTpl let-control>
@@ -53,7 +53,7 @@
         <nz-form-control [nzErrorTip]="razonSocialErrorTpl">
           <nz-input-group [nzPrefix]="prefixRazon">
             <input nz-input formControlName="razon_social" id="razon_social"
-              placeholder="Ej. Corporación Favorita C.A. o Servitecnia S.A.S." />
+              placeholder="Ej. Corporación Favorita C.A. o Servitecnia S.A.S." autocomplete="off" />
           </nz-input-group>
           <ng-template #prefixRazon><span nz-icon nzType="bank" class="input-icon"></span></ng-template>
           <ng-template #razonSocialErrorTpl let-control>
@@ -82,7 +82,7 @@
           <nz-form-control [nzErrorTip]="usuarioErrorTpl">
             <nz-input-group [nzPrefix]="prefixMailJ">
               <input nz-input formControlName="correo_electronico" id="correo_electronico_j"
-                placeholder="empresa@ejemplo.com" type="email" />
+                placeholder="empresa@ejemplo.com" type="email" autocomplete="off" />
             </nz-input-group>
             <ng-template #prefixMailJ><span nz-icon nzType="mail" class="input-icon"></span></ng-template>
             <ng-template #usuarioErrorTpl let-control>
@@ -98,7 +98,7 @@
           <nz-form-control [nzErrorTip]="claveAccesoErrorTpl">
             <nz-input-group [nzPrefix]="prefixLockJ" [nzSuffix]="suffixLockJ">
               <input nz-input [type]="mostrarClave ? 'text' : 'password'" formControlName="clave_acceso"
-                id="clave_acceso_j" placeholder="Contraseña del portal" />
+                id="clave_acceso_j" placeholder="Contraseña del portal" autocomplete="new-password" />
             </nz-input-group>
             <ng-template #prefixLockJ><span nz-icon nzType="lock" class="input-icon"></span></ng-template>
             <ng-template #suffixLockJ>

@@ -70,6 +70,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+  align-items: start;
 
   @media (max-width: 640px) {
     grid-template-columns: 1fr;
@@ -80,6 +81,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 16px;
+  align-items: start;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -88,6 +90,8 @@
 
 .form-item-custom {
   margin-bottom: 0;
+  align-content: flex-start;
+  flex-direction: column;
 
   nz-form-label {
     padding-bottom: 4px;

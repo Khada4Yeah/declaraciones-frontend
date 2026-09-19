@@ -7,7 +7,10 @@ import { TokenService } from '../../core/services/token.service';
 import { Token } from '../../core/models/token.model';
 import { checkToken } from '../../core/interceptors/token.interceptor';
 
-
+/**
+ * Servicio de autenticación.
+ * Maneja el login, logout y monitoreo de expiración del token JWT.
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -21,6 +24,13 @@ export class AuthService {
     this.monitorExpiracionToken();
   }
 
+  /**
+   * Inicia sesión con las credenciales proporcionadas.
+   * Almacena el token recibido en una cookie.
+   *
+   * @param auth Credenciales de autenticación (correo y clave).
+   * @returns Observable con el token y tiempo de expiración.
+   */
   iniciarSesion(auth: Auth): Observable<Token> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -31,7 +41,13 @@ export class AuthService {
     );
   }
 
-  cerrarSesion() {
+  /**
+   * Cierra la sesión del usuario actual.
+   * Invalida el token en el backend y lo elimina de la cookie.
+   *
+   * @returns Observable que se completa al cerrar sesión.
+   */
+  cerrarSesion(): Observable<unknown> {
     return this.http.post(`${this.apiUrl}/logout`, null, { context: checkToken() }).pipe(
       tap(() => {
         this.tokenService.removerToken();
@@ -39,12 +55,15 @@ export class AuthService {
     );
   }
 
-  private monitorExpiracionToken() {
+  /**
+   * Monitorea la expiración del token JWT.
+   * Cuando el token expira, cierra la sesión automáticamente.
+   */
+  private monitorExpiracionToken(): void {
     this.tokenService.monitorExpiracionToken().subscribe(expired => {
       if (expired) {
         this.cerrarSesion().subscribe();
       }
     });
   }
-
 }

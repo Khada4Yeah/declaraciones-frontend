@@ -15,7 +15,17 @@ export class LayoutComponent {
   estado: EstadoSolicitud = "inicial";
 
   constructor() {
-    this.isCollapsed = false;
+    this.isCollapsed = typeof window !== 'undefined' && window.innerWidth <= 768;
+  }
+
+  get collapsedWidth(): number {
+    return typeof window !== 'undefined' && window.innerWidth <= 768 ? 0 : 80;
+  }
+
+  cerrarSidebarEnMovil(): void {
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      this.isCollapsed = true;
+    }
   }
 
   cerrarSesion(): void {

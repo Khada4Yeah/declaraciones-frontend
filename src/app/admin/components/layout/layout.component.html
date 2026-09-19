@@ -1,8 +1,10 @@
 <nz-layout class="app-layout" *ngIf="estado === 'inicial'">
-    <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed"
+    <!-- Overlay oscurecido para cerrar el menú en móviles al hacer clic afuera -->
+    <div class="sidebar-backdrop-mobile" *ngIf="!isCollapsed" (click)="cerrarSidebarEnMovil()"></div>
+    <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" [nzCollapsedWidth]="collapsedWidth" nzBreakpoint="md" [(nzCollapsed)]="isCollapsed"
         [nzTrigger]="null">
         <div class="sidebar-logo">
-            <a routerLink="">
+            <a routerLink="" (click)="cerrarSidebarEnMovil()">
                 <img src="assets/images/logo.png" alt="logo">
                 <h1>M&V Asociados</h1>
             </a>
@@ -11,10 +13,10 @@
             <li nz-submenu nzOpen nzTitle="Clientes" nzIcon="user">
                 <ul>
                     <li nz-menu-item nzMatchRouter>
-                        <a routerLink="usuarios/lista-usuarios">Listar</a>
+                        <a routerLink="usuarios/lista-usuarios" (click)="cerrarSidebarEnMovil()">Listar</a>
                     </li>
                     <li nz-menu-item nzMatchRouter>
-                        <a routerLink="usuarios/crear-usuario">Crear</a>
+                        <a routerLink="usuarios/crear-usuario" (click)="cerrarSidebarEnMovil()">Crear</a>
                     </li>
                 </ul>
             </li>

@@ -1,19 +1,33 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
 
-import { respuestaError } from '../models/respuesta-error.model';
+import { RespuestaError } from '../models/respuesta-error.model';
 
+/**
+ * Servicio centralizado para mostrar modales de feedback al usuario.
+ * Utiliza NG-Zorro NzModalService para mostrar diálogos de éxito, error,
+ * información y advertencia.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class ModalService {
   private router = inject(Router);
+  private modalService = inject(NzModalService);
 
-  constructor(private modalService: NzModalService) { }
-
-  mostrar(tipo: 'error' | 'success' | 'info' | 'warning', mensaje: string, ruta?: string, recargar?: boolean) {
+  /**
+   * Muestra un modal con el tipo y mensaje especificados.
+   * Opcionalmente redirige a una ruta o recarga la página al cerrar.
+   *
+   * @param tipo Tipo de modal: 'error', 'success', 'info' o 'warning'.
+   * @param mensaje Mensaje a mostrar en el cuerpo del modal.
+   * @param ruta Ruta opcional para navegar al cerrar el modal (solo en success).
+   * @param recargar Si es true, recarga la página al cerrar el modal (solo en success).
+   */
+  mostrar(tipo: 'error' | 'success' | 'info' | 'warning', mensaje: string, ruta?: string, recargar?: boolean): void {
     let modal: NzModalRef;
     switch (tipo) {
       case 'error':
@@ -55,11 +69,30 @@ export class ModalService {
         });
         break;
       default:
-        throw new Error(`Unsupported modal type: ${tipo}`);
+        throw new Error(`Tipo de modal no soportado: ${tipo}`);
     }
   }
 
-  public formateoErrores(error: respuestaError): string {
+  /**
+   * Muestra un modal de error HTTP, formateando automáticamente los errores
+   * de validación del backend.
+   *
+   * @param error Objeto HttpErrorResponse del error HTTP capturado.
+   */
+  mostrarErrorHttp(error: HttpErrorResponse): void {
+    const respuestaError = error.error as RespuestaError;
+    const mensaje = this.formateoErrores(respuestaError);
+    this.mostrar('error', mensaje);
+  }
+
+  /**
+   * Formatea los errores de validación del backend en un string legible.
+   * Combina el mensaje principal con los mensajes de cada campo con error.
+   *
+   * @param error Objeto con el mensaje y los errores de validación.
+   * @returns String formateado con todos los mensajes de error.
+   */
+  public formateoErrores(error: RespuestaError): string {
     let result = error.message + '\n';
 
     if (error.errors !== null && error.errors !== undefined) {

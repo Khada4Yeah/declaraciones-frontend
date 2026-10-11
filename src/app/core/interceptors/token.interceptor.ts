@@ -15,13 +15,13 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   const token = inject(TokenService);
-
   const accesToken = token.obtenerToken();
+
+  let headers = req.headers.set('Accept', 'application/json');
   if (accesToken) {
-    const autRequest = req.clone({
-      headers: req.headers.set('Authorization', `Bearer ${accesToken}`)
-    });
-    return next(autRequest);
+    headers = headers.set('Authorization', `Bearer ${accesToken}`);
   }
-  return next(req);
+
+  const autRequest = req.clone({ headers });
+  return next(autRequest);
 };
